@@ -1,3 +1,4 @@
+import 'package:destinymatch/screens/Login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,10 +29,10 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoginPage(),
     );
   }
 }
@@ -58,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _curIndex = 0;
   final tabs = [
     Container(
-      child: Center(
+      child: const Center(
         child: Text(
           "Chat",
           style: TextStyle(fontSize: 30),
@@ -66,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
     Container(
-      child: Center(
+      child: const Center(
         child: Text(
           "Love",
           style: TextStyle(fontSize: 30),
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
     Container(
-      child: Center(
+      child: const Center(
         child: Text(
           "Profile",
           style: TextStyle(fontSize: 30),
@@ -96,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         iconSize: 22,
         selectedFontSize: 17,
         type: BottomNavigationBarType.fixed,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat_bubble_outline),
             label: "Chat",
