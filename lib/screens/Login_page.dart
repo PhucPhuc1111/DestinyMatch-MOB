@@ -20,83 +20,25 @@ class LoginFunction extends State<LoginPage> {
   void _login() async {
     final email = _emailController.text;
     final password = _passwordController.text;
-    await _accountservice.login(email, password);
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const MyHomePage(
-              title:
-                  "hello")), // Thay MyHomePage bằng tên widget của trang bạn muốn điều hướng đến
-    );
+    await _accountservice.login(context, email, password);
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(title: const Text("Login Page")),
-  //     body: Padding(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: <Widget>[
-  //           Image.asset(
-  //             'assets/logo.png', // Đường dẫn đến logo của bạn
-  //             height: 100.0,
-  //             width: 100.0,
-  //           ),
-  //           SizedBox(height: 20.0),
-  //           Form(
-  //             key: _formKey,
-  //             child: Column(
-  //               children: <Widget>[
-  //                 TextFormField(
-  //                   controller: _emailController,
-  //                   decoration: const InputDecoration(
-  //                     labelText: 'Email',
-  //                     border: OutlineInputBorder(),
-  //                   ),
-  //                   validator: (value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please enter your email';
-  //                     }
-  //                     return null;
-  //                   },
-  //                 ),
-  //                 SizedBox(height: 20.0),
-  //                 TextFormField(
-  //                   controller: _passwordController,
-  //                   decoration: const InputDecoration(
-  //                     labelText: 'Password',
-  //                     border: OutlineInputBorder(),
-  //                   ),
-  //                   obscureText: true,
-  //                   validator: (value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please enter your password';
-  //                     }
-  //                     return null;
-  //                   },
-  //                 ),
-  //                 SizedBox(height: 20.0),
-  //                 ElevatedButton(
-  //                   onPressed: () async {
-  //                     if (_formKey.currentState!.validate()) {
-  //                       // Xử lý đăng nhập ở đây
-  //                       // print('Email: ${_emailController.text}');
-  //                       // print('Password: ${_passwordController.text}');
-  //                       login(_emailController.text, _passwordController.text);
-  //                     }
-  //                   },
-  //                   child: Text('Login'),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
+  Future<void> _checkIfLoggedIn() async {
+    bool isLoggedIn = await _accountservice.checkAccountLogin();
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage(title: "hello")),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfLoggedIn();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
