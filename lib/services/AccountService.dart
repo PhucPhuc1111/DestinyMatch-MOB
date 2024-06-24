@@ -27,7 +27,6 @@ class Accountservice {
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
       print(responseBody);
 
-      // Giả sử API trả về một token trong response
       String token = responseBody['token'];
 
       // Lưu token vào Flutter Secure Storage
