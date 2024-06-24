@@ -1,19 +1,19 @@
 import 'dart:convert';
-import 'package:destinymatch/main.dart';
+import 'package:destinymatch/screens/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Accountservice {
-  final String apiLink = "https://localhost:7215";
-  //final String apiLink = "http://192.168.1.12:7215";
+  final String apiLink = "https://localhost:7215/api";
+  //final String apiLink = "https://destiny-match.azurewebsites.net";
 
   Accountservice();
 
   Future<void> login(
       BuildContext context, String email, String password) async {
-    final url = Uri.parse("$apiLink/api/accounts/login");
+    final url = Uri.parse("$apiLink/accounts/login");
     const storage = FlutterSecureStorage();
     final response = await http.post(
       url,
@@ -39,7 +39,7 @@ class Accountservice {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => const MyHomePage(title: "hello")),
+            builder: (context) => const HomePage()),
       );
     } else {
       print({"error": "Login failed"});

@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:destinymatch/models/Member.dart';
+
 
 class Account {
   String id;
@@ -8,35 +8,39 @@ class Account {
   DateTime? createAt;
   String role;
   String? status;
+  Member? member;
 
   Account({
     required this.id,
-    required this.email,
-    required this.password,
-    required this.createAt,
+    this.email,
+    this.password,
+    this.createAt,
     required this.role,
-    required this.status,
+    this.status,
+    this.member,
   });
 
+  // Phương thức từ JSON
   factory Account.fromJson(Map<String, dynamic> json) {
     return Account(
-      id: json['id'] as String,
-      email: json['email'] as String?,
-      password: json['password'] as String?,
-      createAt: DateTime.parse(json['createat'] as String),
-      role: json['role'] as String,
-      status: json['status'] as String?,
+      id: json['id'],
+      email: json['email'],
+      password: json['password'],
+      createAt: json['createAt'] != null ? DateTime.parse(json['createAt']) : null,
+      role: json['role'],
+      status: json['status'],
+      member: json['member'] != null ? Member.fromJson(json['member']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'password': password,
-      'createat': createAt?.toIso8601String(),
-      'role': role,
-      'status': status,
-    };
-  }
+  // Phương thức to JSON
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'email': email,
+        'password': password,
+        'createAt': createAt?.toIso8601String(),
+        'role': role,
+        'status': status,
+        'member': member?.toJson(),
+      };
 }

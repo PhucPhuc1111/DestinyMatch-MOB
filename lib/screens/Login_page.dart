@@ -1,11 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
-
-import 'package:destinymatch/main.dart';
 import 'package:destinymatch/services/AccountService.dart';
+import 'package:destinymatch/screens/HomePage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -28,7 +23,7 @@ class LoginFunction extends State<LoginPage> {
     if (isLoggedIn) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MyHomePage(title: "hello")),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     }
   }
