@@ -23,6 +23,7 @@ class _ConversationPageState extends State<ConversationPage> {
   void initState() {
     super.initState();
     _requestPermissionsAndGetToken();
+    _listenToNotifications();
   }
 
   Future<void> _requestPermissionsAndGetToken() async {
@@ -46,23 +47,36 @@ class _ConversationPageState extends State<ConversationPage> {
         print('Sending token to server: $token');
       }
 
-      // Replace this with your server-side code to handle the token
-      //   final response = await http.post(
-      //     Uri.parse('https://localhost:7215/api/firebase/send-notification?fcmToken=$token'),
-      //     body: {'fcmToken': token},
-      //   );
+      //Replace this with your server-side code to handle the token
+      final response = await http.post(
+        Uri.parse(
+            'https://localhost:7215/api/firebase/send-notification?fcmToken=$token'),
+        body: {
+          'fcmToken': token,
+          'title': 'Test Title',
+          'body': 'Test Body',
+        },
+      );
 
-      //   if (response.statusCode == 200) {
-      //     print('Token sent to server successfully');
-      //   } else {
-      //     print('Error sending token to server: ${response.statusCode}');
-      //   }
-      // } else {
-      //   print('FCM token is null. Make sure you have granted notification permissions.');
-      // }
+      if (response.statusCode == 200) {
+        print('Token sent to server successfully');
+      } else {
+        print('Error sending token to server: ${response.statusCode}');
+      }
     } catch (e) {
       print('Error getting FCM token: $e');
     }
+  }
+
+  void _listenToNotifications() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   @override
