@@ -62,32 +62,32 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCsG56vEYE7eqi_N--QC-C_XO--kmwRA8I',
-    appId: '1:980721620844:ios:9d6ea7e17ad5cb27340549',
+    appId: '1:980721620844:ios:8ed6451927f0bceb340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'destinymatch-70b72.appspot.com',
-    iosBundleId: 'com.example.destinymatch',
+    iosBundleId: 'com.example.flutterChatsApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCsG56vEYE7eqi_N--QC-C_XO--kmwRA8I',
-    appId: '1:980721620844:ios:9d6ea7e17ad5cb27340549',
+    appId: '1:980721620844:ios:8ed6451927f0bceb340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'destinymatch-70b72.appspot.com',
-    iosBundleId: 'com.example.destinymatch',
+    iosBundleId: 'com.example.flutterChatsApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDejU9euNTGJ0EqtuJ2hJGBhgNi2qw05W4',
-    appId: '1:980721620844:web:d18122f5d479fe73340549',
+    appId: '1:980721620844:web:af86fc4530b103e5340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     authDomain: 'destinymatch-70b72.firebaseapp.com',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'destinymatch-70b72.appspot.com',
-    measurementId: 'G-LLTZT7V5K0',
+    measurementId: 'G-DRVCTGFT7Z',
   );
 }

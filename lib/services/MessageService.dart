@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:destinymatch/models/Message.dart';
+import 'package:flutter_chats_app/models/Message.dart';
 import 'package:http/http.dart' as http;
 
 class Messageservice {
