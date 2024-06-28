@@ -1,5 +1,5 @@
-import 'package:destinymatch/models/Member.dart';
-import 'package:destinymatch/models/Package.dart';
+import 'package:flutter_chats_app/models/Member.dart';
+import 'package:flutter_chats_app/models/Package.dart';
 
 class MemberPackage {
   String id;
@@ -28,10 +28,10 @@ class MemberPackage {
       id: json['id'],
       startDate: json['startDate'] != null
           ? DateTime.parse(json['startDate'])
-          : null, // Example assuming date is in ISO 8601 format
+          : null, 
       endDate: json['endDate'] != null
           ? DateTime.parse(json['endDate'])
-          : null, // Example assuming date is in ISO 8601 format
+          : null, 
       status: json['status'],
       memberId: json['memberId'],
       packageId: json['packageId'],

@@ -1,4 +1,4 @@
-import 'package:destinymatch/models/Member.dart';
+import 'package:flutter_chats_app/models/Member.dart';
 
 class Major {
   String id;

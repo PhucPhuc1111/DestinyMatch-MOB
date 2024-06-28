@@ -1,38 +1,36 @@
-import 'package:destinymatch/models/Account.dart';
-import 'package:destinymatch/models/Conversation.dart';
-import 'package:destinymatch/models/Hobby.dart';
-import 'package:destinymatch/models/Major.dart';
-import 'package:destinymatch/models/MatchRequest.dart';
-import 'package:destinymatch/models/MemberPackage.dart';
-import 'package:destinymatch/models/Message.dart';
-import 'package:destinymatch/models/University.dart';
-import 'package:destinymatch/models/Picture.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:ui';
+
+import 'package:flutter_chats_app/models/Account.dart';
+import 'package:flutter_chats_app/models/Hobby.dart';
+import 'package:flutter_chats_app/models/Major.dart';
+import 'package:flutter_chats_app/models/Matching.dart';
+import 'package:flutter_chats_app/models/MemberPackage.dart';
+import 'package:flutter_chats_app/models/Message.dart';
+import 'package:flutter_chats_app/models/University.dart';
+import 'package:flutter_chats_app/models/Picture.dart';
 
 class Member {
-  String id;
-  String? fullname;
-  String? introduce;
-  DateTime? dob;
-  bool? gender;
-  String? address;
-  int? surplus;
-  String? status;
-  String accountId;
-  String universityId;
-  String majorId;
-  Account? account;
-  List<Conversation> conversationFirstMembers;
-  List<Conversation> conversationSecondMembers;
-  List<Feedback> feedbacks;
-  Major? major;
-  List<MatchRequest> matchRequestFroms;
-  List<MatchRequest> matchRequestTos;
-  List<MemberPackage> memberPackages;
-  List<Message> messages;
-  List<Picture> pictures;
-  University? university;
-  List<Hobby> hobbies;
+  final String id;
+  final String? fullname;
+  final String? introduce;
+  final DateTime? dob;
+  final bool? gender;
+  final String? address;
+  final int? surplus;
+  final String? status;
+  final String accountId;
+  final String universityId;
+  final String majorId;
+  final Account account;
+  final Major major;
+  final List<Matching> matchingFirstMembers;
+  final List<Matching> matchingSecondMembers;
+  final List<MemberPackage> memberPackages;
+  final List<Message> messages;
+  final List<Picture> pictures;
+  final University university;
+  final List<Hobby> hobbies;
 
   Member({
     required this.id,
@@ -46,18 +44,15 @@ class Member {
     required this.accountId,
     required this.universityId,
     required this.majorId,
-    this.account,
-    this.conversationFirstMembers = const [],
-    this.conversationSecondMembers = const [],
-    this.feedbacks = const [],
-    this.major,
-    this.matchRequestFroms = const [],
-    this.matchRequestTos = const [],
-    this.memberPackages = const [],
-    this.messages = const [],
-    this.pictures = const [],
-    this.university,
-    this.hobbies = const [],
+    required this.account,
+    required this.major,
+    required this.matchingFirstMembers,
+    required this.matchingSecondMembers,
+    required this.memberPackages,
+    required this.messages,
+    required this.pictures,
+    required this.university,
+    required this.hobbies,
   });
 
   factory Member.fromJson(Map<String, dynamic> json) {
@@ -73,69 +68,46 @@ class Member {
       accountId: json['accountId'],
       universityId: json['universityId'],
       majorId: json['majorId'],
-      account: json['account'] != null ? Account.fromJson(json['account']) : null,
-      conversationFirstMembers: List<Conversation>.from(json['conversationFirstMembers'].map((x) => Conversation.fromJson(x))),
-      conversationSecondMembers: List<Conversation>.from(json['conversationSecondMembers'].map((x) => Conversation.fromJson(x))),
-      major: json['major'] != null ? Major.fromJson(json['major']) : null,
-      matchRequestFroms: List<MatchRequest>.from(json['matchRequestFroms'].map((x) => MatchRequest.fromJson(x))),
-      matchRequestTos: List<MatchRequest>.from(json['matchRequestTos'].map((x) => MatchRequest.fromJson(x))),
-      memberPackages: List<MemberPackage>.from(json['memberPackages'].map((x) => MemberPackage.fromJson(x))),
-      messages: List<Message>.from(json['messages'].map((x) => Message.fromJson(x))),
-      pictures: List<Picture>.from(json['pictures'].map((x) => Picture.fromJson(x))),
-      university: json['university'] != null ? University.fromJson(json['university']) : null,
-      hobbies: List<Hobby>.from(json['hobbies'].map((x) => Hobby.fromJson(x))),
+      account: Account.fromJson(json['account']),
+      major: Major.fromJson(json['major']),
+      matchingFirstMembers: (json['matchingFirstMembers'] as List)
+          .map((i) => Matching.fromJson(i))
+          .toList(),
+      matchingSecondMembers: (json['matchingSecondMembers'] as List)
+          .map((i) => Matching.fromJson(i))
+          .toList(),
+      memberPackages: (json['memberPackages'] as List)
+          .map((i) => MemberPackage.fromJson(i))
+          .toList(),
+      messages: (json['messages'] as List).map((i) => Message.fromJson(i)).toList(),
+      pictures: (json['pictures'] as List).map((i) => Picture.fromJson(i)).toList(),
+      university: University.fromJson(json['university']),
+      hobbies: (json['hobbies'] as List).map((i) => Hobby.fromJson(i)).toList(),
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'fullname': fullname,
-    'introduce': introduce,
-    'dob': dob?.toIso8601String(), // Convert DateTime to ISO 8601 format
-    'gender': gender,
-    'address': address,
-    'surplus': surplus,
-    'status': status,
-    'accountId': accountId,
-    'universityId': universityId,
-    'majorId': majorId,
-    'account': account?.toJson(),
-    'conversationFirstMembers': List<dynamic>.from(conversationFirstMembers.map((x) => x.toJson())),
-    'conversationSecondMembers': List<dynamic>.from(conversationSecondMembers.map((x) => x.toJson())),
-    'major': major?.toJson(),
-    'matchRequestFroms': List<dynamic>.from(matchRequestFroms.map((x) => x.toJson())),
-    'matchRequestTos': List<dynamic>.from(matchRequestTos.map((x) => x.toJson())),
-    'memberPackages': List<dynamic>.from(memberPackages.map((x) => x.toJson())),
-    'messages': List<dynamic>.from(messages.map((x) => x.toJson())),
-    'pictures': List<dynamic>.from(pictures.map((x) => x.toJson())),
-    'university': university?.toJson(),
-    'hobbies': List<dynamic>.from(hobbies.map((x) => x.toJson())),
-  };
-
-  static Member fromJsonWithPictures(Map<String, dynamic> json, List<Picture> pictures) {
-    return Member(
-      id: json['id'],
-      fullname: json['fullname'],
-      introduce: json['introduce'],
-      dob: json['dob'] != null ? DateTime.parse(json['dob']) : null,
-      gender: json['gender'],
-      address: json['address'],
-      surplus: json['surplus'],
-      status: json['status'],
-      accountId: json['accountId'],
-      universityId: json['universityId'],
-      majorId: json['majorId'],
-      account: json['account'] != null ? Account.fromJson(json['account']) : null,
-      conversationFirstMembers: List<Conversation>.from(json['conversationFirstMembers'].map((x) => Conversation.fromJson(x))),
-      conversationSecondMembers: List<Conversation>.from(json['conversationSecondMembers'].map((x) => Conversation.fromJson(x))),
-      major: json['major'] != null ? Major.fromJson(json['major']) : null,
-      matchRequestFroms: List<MatchRequest>.from(json['matchRequestFroms'].map((x) => MatchRequest.fromJson(x))),
-      matchRequestTos: List<MatchRequest>.from(json['matchRequestTos'].map((x) => MatchRequest.fromJson(x))),
-      memberPackages: List<MemberPackage>.from(json['memberPackages'].map((x) => MemberPackage.fromJson(x))),
-      messages: List<Message>.from(json['messages'].map((x) => Message.fromJson(x))),
-      pictures: pictures,
-      university: json['university'] != null ? University.fromJson(json['university']) : null,
-      hobbies: List<Hobby>.from(json['hobbies'].map((x) => Hobby.fromJson(x))),
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'fullname': fullname,
+      'introduce': introduce,
+      'dob': dob?.toIso8601String(),
+      'gender': gender,
+      'address': address,
+      'surplus': surplus,
+      'status': status,
+      'accountId': accountId,
+      'universityId': universityId,
+      'majorId': majorId,
+      'account': account.toJson(),
+      'major': major.toJson(),
+      'matchingFirstMembers': matchingFirstMembers.map((e) => e.toJson()).toList(),
+      'matchingSecondMembers': matchingSecondMembers.map((e) => e.toJson()).toList(),
+      'memberPackages': memberPackages.map((e) => e.toJson()).toList(),
+      'messages': messages.map((e) => e.toJson()).toList(),
+      'pictures': pictures.map((e) => e.toJson()).toList(),
+      'university': university.toJson(),
+      'hobbies': hobbies.map((e) => e.toJson()).toList(),
+    };
   }
 }

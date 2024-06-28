@@ -1,4 +1,4 @@
-import 'package:destinymatch/models/MemberPackage.dart';
+import 'package:flutter_chats_app/models/MemberPackage.dart';
 
 class Package {
   String id;

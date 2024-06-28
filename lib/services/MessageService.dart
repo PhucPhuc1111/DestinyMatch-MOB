@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:destinymatch/models/Message.dart';
+import 'package:flutter_chats_app/models/Message.dart';
 import 'package:http/http.dart' as http;
 
 class Messageservice {
-  String BASE_URL = "https://localhost:7215/api";
+  final String apiLink = "https://localhost:7215/api";
 
   Future<List<Message>> getMessages() async {
-    final url = Uri.parse("$BASE_URL/messages");
+    final url = Uri.parse("$apiLink/messages");
     final response = await http.get(url);
     if (response.statusCode == 200) {
 
@@ -19,4 +19,6 @@ class Messageservice {
       throw Exception('Failed to load members');
     }
   }
+
+  
 }

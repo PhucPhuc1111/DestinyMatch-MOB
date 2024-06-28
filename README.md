@@ -1,4 +1,4 @@
-# destinymatch
+# flutter_chats_app
 
 A new Flutter project.
 

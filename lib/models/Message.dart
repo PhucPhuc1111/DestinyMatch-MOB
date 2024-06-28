@@ -1,15 +1,14 @@
-import 'package:destinymatch/models/Member.dart';
-
-import 'conversation.dart';
+import 'matching.dart';
+import 'member.dart';
 
 class Message {
   String id;
   String content;
   DateTime? sentAt;
   String? status;
-  String conversationId;
+  String matchId;
   String senderId;
-  Conversation? conversation;
+  Matching? match;
   Member? sender;
 
   Message({
@@ -17,37 +16,41 @@ class Message {
     required this.content,
     this.sentAt,
     this.status,
-    required this.conversationId,
+    required this.matchId,
     required this.senderId,
-    this.conversation,
+    this.match,
     this.sender,
   });
 
-  // Phương thức từ JSON
+  // Method to create Message object from JSON
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       id: json['id'],
       content: json['content'],
-      sentAt: json['sentAt'] != null ? DateTime.parse(json['sentAt']) : null,
+      sentAt: json['sentAt'] == null
+          ? null
+          : DateTime.parse(json['sentAt']),
       status: json['status'],
-      conversationId: json['conversationId'],
+      matchId: json['matchId'],
       senderId: json['senderId'],
-      conversation: json['conversation'] != null
-          ? Conversation.fromJson(json['conversation'])
-          : null,
-      sender: json['sender'] != null ? Member.fromJson(json['sender']) : null,
+      match: json['match'] == null
+          ? null
+          : Matching.fromJson(json['match']),
+      sender: json['sender'] == null
+          ? null
+          : Member.fromJson(json['sender']),
     );
   }
 
-  // Phương thức to JSON
+  // Method to convert Message object to JSON
   Map<String, dynamic> toJson() => {
         'id': id,
         'content': content,
         'sentAt': sentAt?.toIso8601String(),
         'status': status,
-        'conversationId': conversationId,
+        'matchId': matchId,
         'senderId': senderId,
-        'conversation': conversation?.toJson(),
+        'match': match?.toJson(),
         'sender': sender?.toJson(),
       };
 }
