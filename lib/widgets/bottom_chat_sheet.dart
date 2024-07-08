@@ -2,11 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/services/MessageService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 class BottomChatSheet extends StatefulWidget {
   final String matchingId, senderId;
+  final HubConnection hubConnection;
   const BottomChatSheet(
-      {super.key, required this.matchingId, required this.senderId});
+      {super.key,
+      required this.matchingId,
+      required this.senderId,
+      required this.hubConnection});
 
   @override
   State<BottomChatSheet> createState() => _BottomChatSheetState();
@@ -20,6 +25,17 @@ class _BottomChatSheetState extends State<BottomChatSheet> {
     await messageservice.sendMessage(
         widget.matchingId, widget.senderId, content, "sent");
   }
+
+void _sendMessageRealTime() async {
+  try {
+    await widget.hubConnection.invoke('SendMessage', args: [widget.matchingId, widget.senderId, content.text]);
+    print("Message sent");
+    content.text = ""; // Clear text field after sending message
+  } catch (e) {
+    print("Error sending message: $e");
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +78,8 @@ class _BottomChatSheetState extends State<BottomChatSheet> {
               child: InkWell(
                 onTap: () {
                   sendMessage(content.text);
+                  _sendMessageRealTime();
+                  content.text = "";
                 },
                 child: const Icon(
                   Icons.send,
