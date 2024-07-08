@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chats_app/models/Message.dart';
 import 'package:flutter_chats_app/services/MessageService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/bottom_chat_sheet.dart';
 import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ChatScreen extends StatefulWidget {
   final String matchingId;
@@ -18,7 +19,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   Messageservice messageservice = Messageservice();
   List<dynamic> messages = [];
-
+  String senderId = "";
   @override
   void initState() {
     super.initState();
@@ -27,9 +28,18 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> fetchConversation() async {
     try {
+      FlutterSecureStorage storage = const FlutterSecureStorage();
+      var token = await storage.read(key: "token");
+      if (token == null) {
+        throw Exception("No token found, please login again");
+      }
+
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.toString());
+      var memberId = decodedToken["memberid"];
       var data = await messageservice.getMessages(widget.matchingId);
       setState(() {
         messages = data;
+        senderId = memberId;
       });
     } catch (e) {
       print("Error fetching conversation: $e");
@@ -141,7 +151,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   final message = messages[index];
                   return ChatMessageSample(
-                    isMeChatting: message.senderId == "4775bb8c-cba0-4353-8115-6788e7bcc45e",
+                    isMeChatting: message.senderId ==
+                        "4775bb8c-cba0-4353-8115-6788e7bcc45e",
                     messageBody: message.content,
                   );
                 },
@@ -150,7 +161,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomChatSheet(),
+      bottomNavigationBar: BottomChatSheet(matchingId: widget.matchingId,senderId: senderId,),
     );
   }
 }
