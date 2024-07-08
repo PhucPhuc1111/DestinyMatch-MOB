@@ -1,11 +1,50 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chats_app/services/MessageService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/bottom_chat_sheet.dart';
 import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
-class ChatSceen extends StatelessWidget {
-  const ChatSceen({super.key});
+class ChatScreen extends StatefulWidget {
+  final String matchingId;
+
+  ChatScreen({Key? key, required this.matchingId}) : super(key: key);
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  Messageservice messageservice = Messageservice();
+  List<dynamic> messages = [];
+  String senderId = "";
+  @override
+  void initState() {
+    super.initState();
+    fetchConversation(); // Gọi hàm để tải dữ liệu
+  }
+
+  Future<void> fetchConversation() async {
+    try {
+      FlutterSecureStorage storage = const FlutterSecureStorage();
+      var token = await storage.read(key: "token");
+      if (token == null) {
+        throw Exception("No token found, please login again");
+      }
+
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.toString());
+      var memberId = decodedToken["memberid"];
+      var data = await messageservice.getMessages(widget.matchingId);
+      setState(() {
+        messages = data;
+        senderId = memberId;
+      });
+    } catch (e) {
+      print("Error fetching conversation: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +116,7 @@ class ChatSceen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Jones Noa",
+                        "Jones Hello",
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -107,41 +146,22 @@ class ChatSceen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ListView(
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 70),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Today",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  ChatMessageSample(
-                    isMeChatting: true,
-                    messageBody: "hi, how are you?",
-                  ),
-                  ChatMessageSample(
-                    isMeChatting: false,
-                    messageBody: "I am fine what aout your?",
-                  ),
-                  ChatMessageSample(
-                    isMeChatting: true,
-                    messageBody: "hi, how are you?",
-                  ),
-                ],
+              child: ListView.builder(
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  final message = messages[index];
+                  return ChatMessageSample(
+                    isMeChatting: message.senderId ==
+                        "4775bb8c-cba0-4353-8115-6788e7bcc45e",
+                    messageBody: message.content,
+                  );
+                },
               ),
             )
           ],
         ),
       ),
-      bottomNavigationBar: BottomChatSheet(),
+      bottomNavigationBar: BottomChatSheet(matchingId: widget.matchingId,senderId: senderId,),
     );
   }
 }
