@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chats_app/screens/AllChats_screen.dart';
+import 'package:flutter_chats_app/screens/home_screen.dart';
+import 'package:flutter_chats_app/screens/login_screen.dart';
 import 'package:flutter_chats_app/screens/start_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: StartScreen(),
+      home: LoginScreen(),
     );
   }
 }

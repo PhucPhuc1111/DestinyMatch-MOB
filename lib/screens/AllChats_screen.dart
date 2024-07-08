@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/screens/chat_sceen.dart';
+import 'package:flutter_chats_app/services/MatchingService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 
 class AllChatScreen extends StatefulWidget {
@@ -11,12 +12,16 @@ class AllChatScreen extends StatefulWidget {
 
 class _AllChatScreenState extends State<AllChatScreen> {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final TextEditingController _searchController = TextEditingController();
+  Matchingservice matchingservice = Matchingservice();
+  List matchings = [];
 
   @override
   void initState() {
     super.initState();
     _requestPermissionsAndGetToken();
     _listenToNotifications();
+    fetchConversation();
   }
 
   Future<void> _requestPermissionsAndGetToken() async {
@@ -30,9 +35,17 @@ class _AllChatScreenState extends State<AllChatScreen> {
       provisional: false,
       sound: true,
     );
-    String? token = await _messaging.getToken();
+  }
 
-    print(token);
+  Future<void> fetchConversation() async {
+    try {
+      var data = await matchingservice.getListMatching();
+      setState(() {
+        matchings = data;
+      });
+    } catch (e) {
+      print("Error fetching conversation: $e");
+    }
   }
 
   void _listenToNotifications() {
@@ -45,42 +58,6 @@ class _AllChatScreenState extends State<AllChatScreen> {
       }
     });
   }
-
-  final List<String> images = [
-    "assets/images/Christine.jpg",
-    "assets/images/Davis.jpg",
-    "assets/images/Johnson.jpg",
-    "assets/images/Jones Noa.jpg",
-    "assets/images/Parker Bee.jpg",
-    "assets/images/Smith.jpg",
-  ];
-
-  final List<String> names = [
-    "Christine",
-    "Davis",
-    "Johnson",
-    "Jones Noa",
-    "Parker Bee",
-    "Smith",
-  ];
-
-  final List<String> msgTiming = [
-    "Mon",
-    "12:30",
-    "Sun",
-    "05:41",
-    "22:12",
-    "Wed",
-  ];
-
-  final List<String> msgs = [
-    "Hi, how are you?",
-    "Where are you from?",
-    "Hello, is all right?",
-    "It is nice to meet you",
-    "Good morning",
-    "Good morning",
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +113,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
                 ],
               ),
               child: TextFormField(
+                controller: _searchController,
                 decoration: InputDecoration(
                   hintText: "Search",
                   border: InputBorder.none,
@@ -150,42 +128,47 @@ class _AllChatScreenState extends State<AllChatScreen> {
             ),
             SizedBox(height: media.width * 0.02),
             ListView.builder(
-                itemCount: images.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatSceen(),
-                          ),
-                        );
-                      },
-                      leading: CircleAvatar(
-                        maxRadius: 28,
-                        backgroundImage: AssetImage(images[index]),
-                      ),
-                      title: Text(
-                        names[index],
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
+              itemCount: matchings.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                final conversation = matchings[index];
+                print("index is $index");
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: ListTile(
+                    onTap: () {
+                      print(conversation["conversation-id"]);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreen(matchingId: conversation["conversation-id"]),
                         ),
-                      ),
-                      subtitle: Text(
-                        msgs[index],
-                        style: TextStyle(
-                          color: AppColors.grayColor,
-                        ),
-                      ),
-                      trailing: Text(msgTiming[index]),
+                      );
+                    },
+                    leading: CircleAvatar(
+                      maxRadius: 28,
+                      backgroundImage:
+                          NetworkImage(conversation["participant-avatar-url"]),
                     ),
-                  );
-                })
+                    title: Text(
+                      conversation["participant-full-name"],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                    subtitle: Text(
+                      conversation["last-message"],
+                      style: TextStyle(
+                        color: AppColors.grayColor,
+                      ),
+                    ),
+                    trailing: Text(conversation["last-message-time"]),
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),

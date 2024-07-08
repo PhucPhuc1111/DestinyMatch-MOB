@@ -28,27 +28,17 @@ class BottomChatSheet extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 8),
-            child: Icon(
-              Icons.emoji_emotions_outlined,
-              color: AppColors.primaryColor2,
-              size: 30,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: Container(
-              alignment: Alignment.centerRight,
-              width: MediaQuery.of(context).size.width / 1.8,
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "type Something",
-                  border: InputBorder.none,
+              padding: EdgeInsets.only(left: 10),
+              child: Container(
+                alignment: Alignment.centerRight,
+                width: MediaQuery.of(context).size.width / 1.8,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "type Something",
+                    border: InputBorder.none,
+                  ),
                 ),
-              ),
-            )
-            
-          ),
+              )),
           Spacer(),
           Padding(
             padding: EdgeInsets.only(right: 10),
@@ -56,7 +46,6 @@ class BottomChatSheet extends StatelessWidget {
               Icons.send,
               color: AppColors.primaryColor2,
               size: 30,
-
             ),
           )
         ],
