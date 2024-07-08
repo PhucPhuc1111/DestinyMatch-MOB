@@ -45,3 +45,6 @@ build/574fc2377ef17b67df2769d9e7907272.cache.dill.track.dill
 /build
 build/574fc2377ef17b67df2769d9e7907272.cache.dill.track.dill
 build/flutter_assets/NOTICES
+/.dart_tool/chrome-device/Default
+/.dart_tool/chrome-device
+/.dart_tool/chrome-device/Default/Extensions
