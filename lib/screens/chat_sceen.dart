@@ -25,12 +25,21 @@ class _ChatScreenState extends State<ChatScreen> {
   List<dynamic> messages = [];
   String senderId = "";
 
+  ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-     fetchConversation();
-     _connectToHub();
-     _listenForMessages();
+    fetchConversation();
+    _connectToHub();
+    _listenForMessages();
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+        .dispose();
+    super.dispose();
   }
 
   Future<void> fetchConversation() async {
@@ -52,43 +61,51 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _connectToHub() async {
-  try {
-    _hubConnection = HubConnectionBuilder()
-        .withUrl('https://localhost:7215/chatHub')
-        .build();
+    try {
+      _hubConnection = HubConnectionBuilder()
+          .withUrl('https://localhost:7215/chatHub')
+          .build();
 
-    await _hubConnection.start();
-    await _hubConnection.invoke('JoinGroup', args: [senderId, widget.matchingId]);
-  } catch (e) {
-    print("Error connecting to hub: $e");
+      await _hubConnection.start();
+      await _hubConnection
+          .invoke('JoinGroup', args: [senderId, widget.matchingId]);
+    } catch (e) {
+      print("Error connecting to hub: $e");
+    }
   }
-}
 
-void _listenForMessages() {
-  try {
-    _hubConnection.on('ReceiveMessage', (args) {
-      if (args != null && args.isNotEmpty) {
-        print("args: $args");
-        var message = {
-          "sender-id": args[0],        
-          "content": args[1],
-        };
-        setState(() {
-          messages.add(message);
-        });
-      }
-    });
-  } catch (e) {
-    print("Error listening for messages: $e");
+  void _listenForMessages() {
+    try {
+      _hubConnection.on('ReceiveMessage', (args) {
+        if (args != null && args.isNotEmpty) {
+          print("args: $args");
+          var message = {
+            "sender-id": args[0],
+            "content": args[1],
+          };
+          setState(() {
+            messages.add(message);
+          });
+          _scrollToBottom();
+        }
+      });
+    } catch (e) {
+      print("Error listening for messages: $e");
+    }
   }
-}
 
-
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: PreferredSize(
+      appBar: PreferredSize(
         preferredSize: Size.fromHeight(70),
         child: Container(
           padding: EdgeInsets.only(top: 5),
