@@ -133,12 +133,10 @@ class _AllChatScreenState extends State<AllChatScreen> {
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final conversation = matchings[index];
-                print("index is $index");
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: ListTile(
                     onTap: () {
-                      print(conversation["conversation-id"]);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

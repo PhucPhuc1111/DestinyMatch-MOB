@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chats_app/services/MessageService.dart';
+import 'package:flutter_chats_app/models/Message.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
-import 'package:flutter_chats_app/widgets/bottom_chat_sheet.dart';
-import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:signalr_core/signalr_core.dart';
+import 'package:flutter_chats_app/services/MessageService.dart';
+import 'package:flutter_chats_app/widgets/bottom_chat_sheet.dart';
+import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
 
 class ChatScreen extends StatefulWidget {
   final String matchingId;
@@ -17,23 +19,26 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  Messageservice messageservice = Messageservice();
+  final Messageservice messageservice = Messageservice();
+  late HubConnection _hubConnection;
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   List<dynamic> messages = [];
   String senderId = "";
+
   @override
   void initState() {
     super.initState();
-    fetchConversation(); // Gọi hàm để tải dữ liệu
+     fetchConversation();
+     _connectToHub();
+     _listenForMessages();
   }
 
   Future<void> fetchConversation() async {
     try {
-      FlutterSecureStorage storage = const FlutterSecureStorage();
-      var token = await storage.read(key: "token");
+      var token = await _storage.read(key: "token");
       if (token == null) {
         throw Exception("No token found, please login again");
       }
-
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token.toString());
       var memberId = decodedToken["memberid"];
       var data = await messageservice.getMessages(widget.matchingId);
@@ -46,11 +51,44 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  Future<void> _connectToHub() async {
+  try {
+    _hubConnection = HubConnectionBuilder()
+        .withUrl('https://localhost:7215/chatHub')
+        .build();
+
+    await _hubConnection.start();
+    await _hubConnection.invoke('JoinGroup', args: [senderId, widget.matchingId]);
+  } catch (e) {
+    print("Error connecting to hub: $e");
+  }
+}
+
+void _listenForMessages() {
+  try {
+    _hubConnection.on('ReceiveMessage', (args) {
+      if (args != null && args.isNotEmpty) {
+        print("args: $args");
+        var message = {
+          "sender-id": args[0],        
+          "content": args[1],
+        };
+        setState(() {
+          messages.add(message);
+        });
+      }
+    });
+  } catch (e) {
+    print("Error listening for messages: $e");
+  }
+}
+
+
+
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(
+       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70),
         child: Container(
           padding: EdgeInsets.only(top: 5),
@@ -140,28 +178,27 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final message = messages[index];
-                  return ChatMessageSample(
-                    isMeChatting: message.senderId ==
-                        "4775bb8c-cba0-4353-8115-6788e7bcc45e",
-                    messageBody: message.content,
-                  );
-                },
-              ),
-            )
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                return ChatMessageSample(
+                  isMeChatting: message["sender-id"] == senderId,
+                  messageBody: message["content"],
+                );
+              },
+            ),
+          ),
+          BottomChatSheet(
+            matchingId: widget.matchingId,
+            senderId: senderId,
+            hubConnection: _hubConnection,
+          ),
+        ],
       ),
-      bottomNavigationBar: BottomChatSheet(matchingId: widget.matchingId,senderId: senderId,),
     );
   }
 }
