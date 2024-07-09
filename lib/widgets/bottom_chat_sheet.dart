@@ -29,7 +29,6 @@ class _BottomChatSheetState extends State<BottomChatSheet> {
 void _sendMessageRealTime() async {
   try {
     await widget.hubConnection.invoke('SendMessage', args: [widget.matchingId, widget.senderId, content.text]);
-    print("Message sent");
     content.text = ""; // Clear text field after sending message
   } catch (e) {
     print("Error sending message: $e");

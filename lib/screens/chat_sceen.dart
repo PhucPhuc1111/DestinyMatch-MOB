@@ -75,32 +75,36 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _listenForMessages() {
-    try {
-      _hubConnection.on('ReceiveMessage', (args) {
-        if (args != null && args.isNotEmpty) {
-          print("args: $args");
-          var message = {
-            "sender-id": args[0],
-            "content": args[1],
-          };
-          setState(() {
-            messages.add(message);
-          });
-          _scrollToBottom();
-        }
-      });
-    } catch (e) {
-      print("Error listening for messages: $e");
-    }
+  try {
+    _hubConnection.on('ReceiveMessage', (args) {
+      if (args != null && args.isNotEmpty) {
+        var message = {
+          "sender-id": args[0],
+          "content": args[1],
+        };
+        setState(() {
+          messages.add(message);
+        });
+        _scrollToBottom();
+      }
+    });
+  } catch (e) {
+    print("Error listening for messages: $e");
   }
+}
 
-  void _scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
-  }
+void _scrollToBottom() {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +203,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
