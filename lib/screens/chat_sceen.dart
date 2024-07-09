@@ -10,9 +10,9 @@ import 'package:flutter_chats_app/widgets/bottom_chat_sheet.dart';
 import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String matchingId;
+  final String matchingId, matchingName, matchingImage;
 
-  ChatScreen({Key? key, required this.matchingId}) : super(key: key);
+  ChatScreen({Key? key, required this.matchingId, required this.matchingName, required this.matchingImage}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -146,7 +146,7 @@ void _scrollToBottom() {
                   children: [
                     CircleAvatar(
                       backgroundImage: AssetImage(
-                        "assets/images/Jones Noa.jpg",
+                        widget.matchingImage,
                       ),
                       minRadius: 25,
                     ),
@@ -175,7 +175,7 @@ void _scrollToBottom() {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Jones Hello",
+                        widget.matchingName,
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
