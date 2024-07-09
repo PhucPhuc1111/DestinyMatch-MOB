@@ -140,7 +140,12 @@ class _AllChatScreenState extends State<AllChatScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChatScreen(matchingId: conversation["conversation-id"]),
+                          builder: (context) => ChatScreen(
+                            matchingId: conversation["conversation-id"],
+                            matchingName: conversation["participant-full-name"],
+                            matchingImage:
+                                conversation["participant-avatar-url"],
+                          ),
                         ),
                       );
                     },
@@ -162,7 +167,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
                         color: AppColors.grayColor,
                       ),
                     ),
-                    trailing: Text(conversation["last-message-time"]),
+                    trailing: Text(conversation["last-message-time"] ?? ""),
                   ),
                 );
               },
