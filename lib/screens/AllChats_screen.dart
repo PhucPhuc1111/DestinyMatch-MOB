@@ -59,6 +59,10 @@ class _AllChatScreenState extends State<AllChatScreen> {
     });
   }
 
+  String AllowCorsImgURL(String url) {
+    return "https://cors-anywhere.herokuapp.com/" + url;
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -152,7 +156,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
                     leading: CircleAvatar(
                       maxRadius: 28,
                       backgroundImage:
-                          NetworkImage(conversation["participant-avatar-url"]),
+                          NetworkImage(AllowCorsImgURL(conversation["participant-avatar-url"])),
                     ),
                     title: Text(
                       conversation["participant-full-name"],
