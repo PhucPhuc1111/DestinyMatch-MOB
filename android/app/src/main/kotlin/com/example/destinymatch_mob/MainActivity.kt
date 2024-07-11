@@ -1,4 +1,4 @@
-package com.example.flutter_chats_app
+package com.example.destinymatch_mob
 
 import io.flutter.embedding.android.FlutterActivity
 
