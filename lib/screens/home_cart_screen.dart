@@ -4,7 +4,7 @@ import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/profile_card.dart';
 
 class HomeCartScreen extends StatefulWidget {
-  const HomeCartScreen({Key? key}) : super(key: key);
+  const HomeCartScreen({super.key});
 
   @override
   State<HomeCartScreen> createState() => _HomeCartState();
@@ -72,26 +72,26 @@ class _HomeCartState extends State<HomeCartScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
+                        const Text(
                           "filter options",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 16),
-                          TextField(
+                        const SizedBox(height: 16),
+                          const TextField(
                             decoration: InputDecoration(
                               labelText: "Option 2",
                               border: OutlineInputBorder(),
                             ),
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
                               // Xử lý khi nhấn nút "Apply"
                             },
-                            child: Text("Apply"),
+                            child: const Text("Apply"),
                           ),
                       ],
                     ),

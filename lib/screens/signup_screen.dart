@@ -24,7 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
             child: Form(
               key: _formKey,
               child: Column(
@@ -37,7 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(height: media.width * 0.03,),
-                        Text(
+                        const Text(
                           "Hey there",
                           style: TextStyle(
                             color: AppColors.blackColor,
@@ -46,7 +46,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         SizedBox(height: media.width * 0.01,),
-                        Text(
+                        const Text(
                           "",
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -120,7 +120,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       //     )
                       // );
                       },
-                      child: Text(
+                      child: const Text(
                         "Forgot your password?",
                         style: TextStyle(
                           color: AppColors.secondaryColor1,
@@ -152,7 +152,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: AppColors.grayColor.withOpacity(0.5),
                           ),
                         ),
-                        Text(
+                        const Text(
                           "   Or   ",
                           style: TextStyle(
                             color: AppColors.grayColor,
@@ -228,7 +228,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       }, 
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: TextSpan(
+                        text: const TextSpan(
                           style: TextStyle(
                             color: AppColors.blackColor,
                             fontSize: 15,

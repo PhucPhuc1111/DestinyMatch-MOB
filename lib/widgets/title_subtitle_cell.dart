@@ -10,11 +10,11 @@ class TitleSubtitleCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       decoration: BoxDecoration(
         color: AppColors.whiteColor,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [
+        boxShadow: const [
            BoxShadow(
              color: Colors.black12,
             blurRadius: 2,
@@ -46,7 +46,7 @@ class TitleSubtitleCell extends StatelessWidget {
           ),
           Text(
             subtitle,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.grayColor,
               fontSize: 12,
             ),

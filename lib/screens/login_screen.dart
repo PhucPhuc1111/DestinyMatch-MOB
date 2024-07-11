@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chats_app/models/Account.dart';
 import 'package:flutter_chats_app/screens/home_screen.dart';
 import 'package:flutter_chats_app/screens/signup_screen.dart';
 import 'package:flutter_chats_app/services/AccountService.dart';
@@ -8,7 +7,7 @@ import 'package:flutter_chats_app/widgets/round_gradient_button.dart';
 import 'package:flutter_chats_app/widgets/round_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -20,7 +19,7 @@ Future<void> Login(BuildContext context, String email, String password) async {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(),
+          builder: (context) => const HomeScreen(),
         ));
   } else {
     print("Login failed");
@@ -39,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
             child: Form(
               key: _formKey,
               child: Column(
@@ -56,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: media.width * 0.03,
                         ),
-                        Text(
+                        const Text(
                           "Hey there",
                           style: TextStyle(
                             color: AppColors.blackColor,
@@ -67,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: media.width * 0.01,
                         ),
-                        Text(
+                        const Text(
                           "Welcome Back",
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -140,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         //     )
                         // );
                       },
-                      child: Text(
+                      child: const Text(
                         "Forgot your password?",
                         style: TextStyle(
                           color: AppColors.secondaryColor1,
@@ -173,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: AppColors.grayColor.withOpacity(0.5),
                         ),
                       ),
-                      Text(
+                      const Text(
                         "   Or   ",
                         style: TextStyle(
                           color: AppColors.grayColor,
@@ -241,12 +240,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignupScreen(),
+                              builder: (context) => const SignupScreen(),
                             ));
                       },
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: TextSpan(
+                        text: const TextSpan(
                           style: TextStyle(
                             color: AppColors.blackColor,
                             fontSize: 15,

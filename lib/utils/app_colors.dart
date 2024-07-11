@@ -10,7 +10,7 @@ class AppColors{
   static const whiteColor = Color(0xFFFFFFFF);
   static const blackColor = Color(0xFF1d1617);
   static const grayColor = Color(0xFF7b6f72);
-  static const lightgrayColor = Color(0xFF7b6f8f8);
+  static const lightgrayColor = Color(0xff7b6f8f8);
 
   static Color primaryColor = hexToColor('#4E4B6F');
   static Color secondary = hexToColor('#16123D');

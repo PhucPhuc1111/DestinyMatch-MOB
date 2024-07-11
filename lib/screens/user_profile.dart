@@ -17,11 +17,11 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             Row(
               children: [
                 ClipRRect(
@@ -33,8 +33,8 @@ class _UserProfileState extends State<UserProfile> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(width: 15),
-                Expanded(child: Column(
+                const SizedBox(width: 15),
+                const Expanded(child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Dear programmer",
@@ -63,7 +63,7 @@ class _UserProfileState extends State<UserProfile> {
                     end: Alignment.centerRight,
                   ),
                   borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black,
                       blurRadius: 2,
@@ -78,7 +78,7 @@ class _UserProfileState extends State<UserProfile> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context)
-                        => PersonalDataScreen(),
+                        => const PersonalDataScreen(),
                       )
                     );
                   },
@@ -86,7 +86,7 @@ class _UserProfileState extends State<UserProfile> {
                     borderRadius: BorderRadius.circular(25),
                   ),
                   textColor: AppColors.primaryColor1,
-                  child: Text(
+                  child: const Text(
                     "Edit",
                     style: TextStyle(
                       color: AppColors.whiteColor,
@@ -98,8 +98,8 @@ class _UserProfileState extends State<UserProfile> {
             ),
               ],
             ),
-            SizedBox(height: 30),
-            Row(
+            const SizedBox(height: 30),
+            const Row(
               children: [
                 Expanded(
                   child: TitleSubtitleCell(title: "456", subtitle: "Friends"),
@@ -114,13 +114,13 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ],
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               decoration: BoxDecoration(
                 color: AppColors.whiteColor,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 2,
@@ -130,7 +130,7 @@ class _UserProfileState extends State<UserProfile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Account",
                     style: TextStyle(
                       fontSize: 16,
@@ -138,7 +138,7 @@ class _UserProfileState extends State<UserProfile> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   SettingRow(
                     icon: "assets/icons/p_personal.png",
                     title: "Personal Data",
@@ -148,13 +148,13 @@ class _UserProfileState extends State<UserProfile> {
                 ],
               ),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               decoration: BoxDecoration(
                 color: AppColors.whiteColor,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 2,
@@ -164,7 +164,7 @@ class _UserProfileState extends State<UserProfile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Other",
                     style: TextStyle(
                       fontSize: 16,
@@ -172,7 +172,7 @@ class _UserProfileState extends State<UserProfile> {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   SettingRow(
                     icon: "assets/icons/p_contact.png",
                     title: "Contact Us",
@@ -191,7 +191,7 @@ class _UserProfileState extends State<UserProfile> {
                 ],
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             RoundGradientButton(title: "Log Out", onPressed: (){}
             
             ),

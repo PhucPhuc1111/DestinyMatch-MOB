@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/screens/chat_sceen.dart';
 import 'package:flutter_chats_app/services/MatchingService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AllChatScreen extends StatefulWidget {
+  const AllChatScreen({super.key});
+
   @override
   _AllChatScreenState createState() => _AllChatScreenState();
 }
@@ -59,8 +62,10 @@ class _AllChatScreenState extends State<AllChatScreen> {
     });
   }
 
-  String AllowCorsImgURL(String url) {
-    return "https://cors-anywhere.herokuapp.com/" + url;
+  Future<String> _getDownloadURL(String urlImg) async {
+    Reference ref = FirebaseStorage.instance.ref();
+    String url = await ref.child(urlImg).getDownloadURL();
+    return url;
   }
 
   @override
@@ -74,11 +79,11 @@ class _AllChatScreenState extends State<AllChatScreen> {
           children: [
             SizedBox(height: media.width * 0.02),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Chats",
                     style: TextStyle(
                       fontSize: 25,
@@ -91,7 +96,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
                     children: [
                       IconButton(
                           onPressed: () {},
-                          icon: Icon(
+                          icon: const Icon(
                             CupertinoIcons.pen,
                             size: 30,
                           )),
@@ -102,8 +107,8 @@ class _AllChatScreenState extends State<AllChatScreen> {
             ),
             SizedBox(height: media.width * 0.05),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              margin: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              margin: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -112,13 +117,13 @@ class _AllChatScreenState extends State<AllChatScreen> {
                     color: Colors.grey.withOpacity(0.5),
                     blurRadius: 10,
                     spreadRadius: 2,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
               child: TextFormField(
                 controller: _searchController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Search",
                   border: InputBorder.none,
                   suffixIcon: Icon(Icons.search),
@@ -126,19 +131,19 @@ class _AllChatScreenState extends State<AllChatScreen> {
               ),
             ),
             SizedBox(height: media.width * 0.02),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: Divider(thickness: 1),
             ),
             SizedBox(height: media.width * 0.02),
             ListView.builder(
               itemCount: matchings.length,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final conversation = matchings[index];
                 return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
@@ -153,21 +158,31 @@ class _AllChatScreenState extends State<AllChatScreen> {
                         ),
                       );
                     },
-                    leading: CircleAvatar(
-                      maxRadius: 28,
-                      backgroundImage:
-                          NetworkImage(AllowCorsImgURL(conversation["participant-avatar-url"])),
+                    leading: FutureBuilder(
+                      future: _getDownloadURL(conversation["participant-avatar-url"]),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return const Icon(Icons.error);
+                        } else {
+                          return CircleAvatar(
+                            maxRadius: 28,
+                            backgroundImage: NetworkImage(snapshot.data ?? ''),
+                          );
+                        }
+                      },
                     ),
                     title: Text(
                       conversation["participant-full-name"],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
                       ),
                     ),
                     subtitle: Text(
                       conversation["last-message"],
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.grayColor,
                       ),
                     ),

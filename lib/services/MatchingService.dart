@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_chats_app/models/Matching.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,7 +9,7 @@ class Matchingservice {
   Matchingservice();
 
   Future<List<dynamic>> getListMatching() async {
-    final storage = await FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     var token = await storage.read(key: "token");
    final url = Uri.parse(
         "$apiLink/matching/get-current-user-conversation?pageIndex=1&pageSize=10&status=success");

@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 
 class UserInfoPage extends StatelessWidget {
-  UserInfoPage({ Key? key, required this.image,x}) : super(key: key);
+  UserInfoPage({ super.key, required this.image,x});
   final String image;
   List<String> images = [
     'assets/images/Christine.jpg',

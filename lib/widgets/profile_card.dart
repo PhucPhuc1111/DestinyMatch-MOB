@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/screens/user_info_page.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({Key? key, required this.image}) : super(key: key);
+  const ProfileCard({super.key, required this.image});
   final String image;
 
   @override

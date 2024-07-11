@@ -9,21 +9,21 @@ class PersonalDataScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("Personal Data"),
+        title: const Text("Personal Data"),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Center(
+              const Center(
                 child: CircleAvatar(
                   radius: 50,
                   backgroundImage: AssetImage("assets/images/Smith.jpg"),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                   height: 35,
                   child: Row(
@@ -35,8 +35,8 @@ class PersonalDataScreen extends StatelessWidget {
                         width: 18,
                         fit: BoxFit.contain,
                       ),
-                      SizedBox(width: 20),
-                      Text(
+                      const SizedBox(width: 20),
+                      const Text(
                         "Dear",
                         style: TextStyle(
                           color: AppColors.blackColor,
@@ -56,8 +56,8 @@ class PersonalDataScreen extends StatelessWidget {
                         width: 18,
                         fit: BoxFit.contain,
                       ),
-                      SizedBox(width: 20),
-                      Text(
+                      const SizedBox(width: 20),
+                      const Text(
                         "Programmer",
                         style: TextStyle(
                           color: AppColors.blackColor,
@@ -77,8 +77,8 @@ class PersonalDataScreen extends StatelessWidget {
                         width: 18,
                         fit: BoxFit.contain,
                       ),
-                      SizedBox(width: 20),
-                      Text(
+                      const SizedBox(width: 20),
+                      const Text(
                         "dear@gmail.com",
                         style: TextStyle(
                           color: AppColors.blackColor,
@@ -98,8 +98,8 @@ class PersonalDataScreen extends StatelessWidget {
                         width: 18,
                         fit: BoxFit.contain,
                       ),
-                      SizedBox(width: 20),
-                      Text(
+                      const SizedBox(width: 20),
+                      const Text(
                         "male",
                         style: TextStyle(
                           color: AppColors.blackColor,
@@ -119,8 +119,8 @@ class PersonalDataScreen extends StatelessWidget {
                         width: 18,
                         fit: BoxFit.contain,
                       ),
-                      SizedBox(width: 20),
-                      Text(
+                      const SizedBox(width: 20),
+                      const Text(
                         "12/03/2000",
                         style: TextStyle(
                           color: AppColors.blackColor,
@@ -129,9 +129,9 @@ class PersonalDataScreen extends StatelessWidget {
                       ),
                     ],
                   )),
-                  SizedBox(height: 50),
+                  const SizedBox(height: 50),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -140,7 +140,7 @@ class PersonalDataScreen extends StatelessWidget {
                       end: Alignment.centerRight,
                     ),
                     borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 2,
@@ -157,7 +157,7 @@ class PersonalDataScreen extends StatelessWidget {
                       250,
                     )),
                     textColor: AppColors.primaryColor1,
-                    child: Text(
+                    child: const Text(
                       "Change Passowrd",
                       style: TextStyle(
                         fontSize: 16,
@@ -169,7 +169,7 @@ class PersonalDataScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -178,7 +178,7 @@ class PersonalDataScreen extends StatelessWidget {
                       end: Alignment.centerRight,
                     ),
                     borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 2,
@@ -195,7 +195,7 @@ class PersonalDataScreen extends StatelessWidget {
                       250,
                     )),
                     textColor: AppColors.primaryColor1,
-                    child: Text(
+                    child: const Text(
                       "Edit Personal Data",
                       style: TextStyle(
                         fontSize: 16,

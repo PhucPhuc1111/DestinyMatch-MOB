@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chats_app/models/Message.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -12,7 +11,7 @@ import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
 class ChatScreen extends StatefulWidget {
   final String matchingId, matchingName, matchingImage;
 
-  ChatScreen({Key? key, required this.matchingId, required this.matchingName, required this.matchingImage}) : super(key: key);
+  const ChatScreen({super.key, required this.matchingId, required this.matchingName, required this.matchingImage});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -25,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
   List<dynamic> messages = [];
   String senderId = "";
 
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -98,7 +97,7 @@ void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     }
@@ -110,11 +109,11 @@ void _scrollToBottom() {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(70),
         child: Container(
-          padding: EdgeInsets.only(top: 5),
+          padding: const EdgeInsets.only(top: 5),
           margin: EdgeInsets.zero,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             boxShadow: [
               BoxShadow(
@@ -128,12 +127,12 @@ void _scrollToBottom() {
             backgroundColor: Colors.white,
             leadingWidth: 40,
             leading: Padding(
-              padding: EdgeInsets.only(left: 15),
+              padding: const EdgeInsets.only(left: 15),
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
                 },
-                child: Icon(
+                child: const Icon(
                   CupertinoIcons.arrow_left,
                   size: 25,
                   color: AppColors.primaryColor2,
@@ -154,13 +153,13 @@ void _scrollToBottom() {
                       bottom: 0,
                       right: 0,
                       child: Container(
-                        padding: EdgeInsets.all(2.5),
+                        padding: const EdgeInsets.all(2.5),
                         decoration: BoxDecoration(
                           color: Colors.green,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 2.5),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.brightness_1,
                           size: 8,
                           color: Colors.green,
@@ -170,19 +169,19 @@ void _scrollToBottom() {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.only(left: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.matchingName,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
                           color: AppColors.primaryColor2,
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text(
                         "Active Now",
                         style: TextStyle(

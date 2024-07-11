@@ -1,5 +1,3 @@
-import 'matching.dart';
-import 'member.dart';
 
 class Message {
   final String id;

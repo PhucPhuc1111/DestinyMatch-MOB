@@ -15,10 +15,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    HomeCartScreen(),
-    AllChatScreen(),
+    const HomeCartScreen(),
+    const AllChatScreen(),
     Container(),
-    UserProfile(),
+    const UserProfile(),
   ];
 
   void onTabTapped(int index) {
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         iconSize: 30,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.chat_bubble_fill), label: "Chats"),

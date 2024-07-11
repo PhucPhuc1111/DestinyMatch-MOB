@@ -10,7 +10,7 @@ class RoundGradientButton extends StatelessWidget {
   const RoundGradientButton({super.key, required this.title, required this.onPressed});@override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -19,7 +19,7 @@ class RoundGradientButton extends StatelessWidget {
             end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(25),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black26,
               blurRadius: 2,
@@ -35,7 +35,7 @@ class RoundGradientButton extends StatelessWidget {
           textColor: AppColors.primaryColor1,
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               color: AppColors.whiteColor,
               fontWeight: FontWeight.w700,

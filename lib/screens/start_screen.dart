@@ -13,7 +13,7 @@ class StartScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -24,7 +24,7 @@ class StartScreen extends StatelessWidget {
                 fit: BoxFit.fitWidth,
               ),
               SizedBox(height: media.width*0.05,),
-              Text(
+              const Text(
                 "Welcome",
                 style: TextStyle(
                   color: AppColors.blackColor,
@@ -33,7 +33,7 @@ class StartScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: media.width * 0.03),
-              Text(
+              const Text(
                 "You are all set now, let's chat with\nyour loved ones",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -48,7 +48,7 @@ class StartScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LoginScreen(),
+                      builder: (context) => const LoginScreen(),
                     )
                   );
                 },

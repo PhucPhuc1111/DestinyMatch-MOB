@@ -18,11 +18,11 @@ class SettingRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(icon, height: 15, width: 15, fit: BoxFit.contain),
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.blackColor,
                   fontSize: 12,
                 ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 
@@ -14,20 +13,20 @@ class ChatMessageSample extends StatelessWidget {
       alignment: isMeChatting ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.65,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          borderRadius: isMeChatting ? BorderRadius.only(
+          borderRadius: isMeChatting ? const BorderRadius.only(
             topLeft: Radius.circular(12),
             bottomLeft: Radius.circular(12),
             bottomRight: Radius.circular(12),
-          ) : BorderRadius.only(
+          ) : const BorderRadius.only(
             topRight: Radius.circular(12),
             bottomLeft: Radius.circular(12),
             bottomRight: Radius.circular(12),
           ),
           color: isMeChatting ? AppColors.primaryColor2 : Colors.grey[200],
         ),
-        margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         child: Text(
           messageBody,
           style: TextStyle(
