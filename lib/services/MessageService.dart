@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Messageservice {
-  final String apiLink = "https://localhost:7215/api";
-
+  //final String apiLink = "https://localhost:7215/api";
+  final String apiLink = "https://destiny-match.azurewebsites.net/api";
   Future<List<dynamic>> getMessages(String matchingid) async {
     final url = Uri.parse("$apiLink/message/conversation/$matchingid");
     final response = await http.get(url);

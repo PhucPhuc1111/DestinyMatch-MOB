@@ -11,7 +11,11 @@ import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
 class ChatScreen extends StatefulWidget {
   final String matchingId, matchingName, matchingImage;
 
-  const ChatScreen({super.key, required this.matchingId, required this.matchingName, required this.matchingImage});
+  const ChatScreen(
+      {super.key,
+      required this.matchingId,
+      required this.matchingName,
+      required this.matchingImage});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -36,8 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    _scrollController
-        .dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -62,7 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _connectToHub() async {
     try {
       _hubConnection = HubConnectionBuilder()
-          .withUrl('https://localhost:7215/chatHub')
+          .withUrl('https://destiny-match.azurewebsites.net/chatHub')
           .build();
 
       await _hubConnection.start();
@@ -74,39 +77,40 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _listenForMessages() {
-  try {
-    _hubConnection.on('ReceiveMessage', (args) {
-      if (args != null && args.isNotEmpty) {
-        var message = {
-          "sender-id": args[0],
-          "content": args[1],
-        };
-        setState(() {
-          messages.add(message);
-        });
-        _scrollToBottom();
+    try {
+      _hubConnection.on('ReceiveMessage', (args) {
+        if (args != null && args.isNotEmpty) {
+          var message = {
+            "sender-id": args[0],
+            "content": args[1],
+          };
+          setState(() {
+            messages.add(message);
+          });
+          _scrollToBottom();
+        }
+      });
+    } catch (e) {
+      print("Error listening for messages: $e");
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       }
     });
-  } catch (e) {
-    print("Error listening for messages: $e");
   }
-}
-
-void _scrollToBottom() {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
-  });
-}
-
 
   @override
   Widget build(BuildContext context) {
+    print("Loading image from path: ${widget.matchingImage}"); // Debug log
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -144,10 +148,8 @@ void _scrollToBottom() {
                 Stack(
                   children: [
                     CircleAvatar(
-                      backgroundImage: AssetImage(
-                        widget.matchingImage,
-                      ),
-                      minRadius: 25,
+                      radius: 20,
+                      backgroundImage: NetworkImage(widget.matchingImage),
                     ),
                     Positioned(
                       bottom: 0,

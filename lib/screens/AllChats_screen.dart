@@ -5,6 +5,7 @@ import 'package:flutter_chats_app/screens/chat_sceen.dart';
 import 'package:flutter_chats_app/services/MatchingService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AllChatScreen extends StatefulWidget {
   const AllChatScreen({super.key});
@@ -14,6 +15,7 @@ class AllChatScreen extends StatefulWidget {
 }
 
 class _AllChatScreenState extends State<AllChatScreen> {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final TextEditingController _searchController = TextEditingController();
   Matchingservice matchingservice = Matchingservice();
@@ -51,7 +53,9 @@ class _AllChatScreenState extends State<AllChatScreen> {
     }
   }
 
-  void _listenToNotifications() {
+  void _listenToNotifications() async{
+    String? fcmtoken = await _messaging.getToken();
+    _storage.write(key: "fcmtoken", value: fcmtoken);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
@@ -62,11 +66,11 @@ class _AllChatScreenState extends State<AllChatScreen> {
     });
   }
 
-  Future<String> _getDownloadURL(String urlImg) async {
-    Reference ref = FirebaseStorage.instance.ref();
-    String url = await ref.child(urlImg).getDownloadURL();
-    return url;
-  }
+  // Future<String> _getDownloadURL(String urlImg) async {
+  //   Reference ref = await FirebaseStorage.instance.ref();
+  //   String url = await ref.child(urlImg).getDownloadURL();
+  //   return url;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -153,25 +157,15 @@ class _AllChatScreenState extends State<AllChatScreen> {
                             matchingId: conversation["conversation-id"],
                             matchingName: conversation["participant-full-name"],
                             matchingImage:
-                                conversation["participant-avatar-url"],
+                                conversation["participant-avatar-url"].toString(),
                           ),
                         ),
                       );
                     },
-                    leading: FutureBuilder(
-                      future: _getDownloadURL(conversation["participant-avatar-url"]),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return const Icon(Icons.error);
-                        } else {
-                          return CircleAvatar(
-                            maxRadius: 28,
-                            backgroundImage: NetworkImage(snapshot.data ?? ''),
-                          );
-                        }
-                      },
+                    leading: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(
+                          conversation["participant-avatar-url"].toString()),
                     ),
                     title: Text(
                       conversation["participant-full-name"],
