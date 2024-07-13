@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class Messageservice {
   final String apiLink = "https://localhost:7215/api";
-
+  //final String apiLink = "https://destiny-match.azurewebsites.net/api";
   Future<List<dynamic>> getMessages(String matchingid) async {
     final url = Uri.parse("$apiLink/message/conversation/$matchingid");
     final response = await http.get(url);
@@ -37,5 +37,23 @@ class Messageservice {
       print("Error: ${response.statusCode}, ${response.body}");
       throw Exception("Failed to send message: ${response.body}");
     }
+  }
+
+  Future<void> SendNotification(
+      String fcmtoken, String title, String notificationBody) async {
+    final url = Uri.parse("$apiLink/firebase/send-notification");
+    var requestBody = jsonEncode({
+      "fcmtoken": fcmtoken,
+      "title": title,
+      "body": notificationBody,
+    });
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: requestBody,
+    );
+    print("send notification response: ${response.body}");
   }
 }
