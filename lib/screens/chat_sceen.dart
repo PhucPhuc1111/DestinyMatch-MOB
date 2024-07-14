@@ -3,15 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:signalr_core/signalr_core.dart' as signalr;
 import 'package:flutter_chats_app/services/MessageService.dart';
 import 'package:flutter_chats_app/widgets/bottom_chat_sheet.dart';
 import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String matchingId, matchingName, matchingImage;
+  final String matchingId, matchingName;
+  final Future<String> matchingImage;
 
-  const ChatScreen({super.key, required this.matchingId, required this.matchingName, required this.matchingImage});
+  const ChatScreen({
+    super.key,
+    required this.matchingId,
+    required this.matchingName,
+    required this.matchingImage,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -19,7 +26,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final Messageservice messageservice = Messageservice();
-  late HubConnection _hubConnection;
+  late signalr.HubConnection _hubConnection;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   List<dynamic> messages = [];
   String senderId = "";
@@ -36,8 +43,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    _scrollController
-        .dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -47,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
       if (token == null) {
         throw Exception("No token found, please login again");
       }
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.toString());
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
       var memberId = decodedToken["memberid"];
       var data = await messageservice.getMessages(widget.matchingId);
       setState(() {
@@ -61,49 +67,57 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _connectToHub() async {
     try {
-      _hubConnection = HubConnectionBuilder()
-          .withUrl('https://localhost:7215/chatHub')
+      _hubConnection = signalr.HubConnectionBuilder()
+          .withUrl('http://10.0.2.2:5107/chatHub')
           .build();
 
       await _hubConnection.start();
-      await _hubConnection
-          .invoke('JoinGroup', args: [senderId, widget.matchingId]);
+      await _hubConnection.invoke('JoinGroup', args: [senderId, widget.matchingId]);
     } catch (e) {
       print("Error connecting to hub: $e");
     }
   }
 
   void _listenForMessages() {
-  try {
-    _hubConnection.on('ReceiveMessage', (args) {
-      if (args != null && args.isNotEmpty) {
-        var message = {
-          "sender-id": args[0],
-          "content": args[1],
-        };
-        setState(() {
-          messages.add(message);
-        });
-        _scrollToBottom();
+    try {
+      _hubConnection.on('ReceiveMessage', (args) {
+        if (args != null && args.isNotEmpty) {
+          var message = {
+            "sender-id": args[0],
+            "content": args[1],
+          };
+          setState(() {
+            messages.add(message);
+          });
+          _scrollToBottom();
+        }
+      });
+    } catch (e) {
+      print("Error listening for messages: $e");
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       }
     });
-  } catch (e) {
-    print("Error listening for messages: $e");
   }
-}
 
-void _scrollToBottom() {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+  Future<String> getImageUrl(String path) async {
+    try {
+      final Reference ref = FirebaseStorage.instance.ref().child(path);
+      final String url = await ref.getDownloadURL();
+      return url;
+    } catch (e) {
+      throw Exception("Failed to load image");
     }
-  });
-}
-
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,32 +155,22 @@ void _scrollToBottom() {
             ),
             title: Row(
               children: [
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage(
-                        widget.matchingImage,
-                      ),
-                      minRadius: 25,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(2.5),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2.5),
-                        ),
-                        child: const Icon(
-                          Icons.brightness_1,
-                          size: 8,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-                  ],
+                FutureBuilder<String>(
+                  future: widget.matchingImage,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Icon(Icons.error);
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Icon(Icons.image_not_supported);
+                    } else {
+                      return CircleAvatar(
+                        backgroundImage: NetworkImage(snapshot.data!),
+                        minRadius: 25,
+                      );
+                    }
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
@@ -192,7 +196,7 @@ void _scrollToBottom() {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

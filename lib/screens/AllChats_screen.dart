@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/screens/chat_sceen.dart';
@@ -14,7 +13,6 @@ class AllChatScreen extends StatefulWidget {
 }
 
 class _AllChatScreenState extends State<AllChatScreen> {
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final TextEditingController _searchController = TextEditingController();
   Matchingservice matchingservice = Matchingservice();
   List matchings = [];
@@ -22,22 +20,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
   @override
   void initState() {
     super.initState();
-    _requestPermissionsAndGetToken();
-    _listenToNotifications();
     fetchConversation();
-  }
-
-  Future<void> _requestPermissionsAndGetToken() async {
-    // Request permissions
-    final settings = await _messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
   }
 
   Future<void> fetchConversation() async {
@@ -51,21 +34,14 @@ class _AllChatScreenState extends State<AllChatScreen> {
     }
   }
 
-  void _listenToNotifications() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });
-  }
-
-  Future<String> _getDownloadURL(String urlImg) async {
-    Reference ref = FirebaseStorage.instance.ref();
-    String url = await ref.child(urlImg).getDownloadURL();
-    return url;
+  Future<String> getImageUrl(String path) async {
+    try {
+      final Reference ref = FirebaseStorage.instance.ref().child(path);
+      final String url = await ref.getDownloadURL();
+      return url;
+    } catch (e) {
+      throw Exception("Failed to load image");
+    }
   }
 
   @override
@@ -153,22 +129,26 @@ class _AllChatScreenState extends State<AllChatScreen> {
                             matchingId: conversation["conversation-id"],
                             matchingName: conversation["participant-full-name"],
                             matchingImage:
-                                conversation["participant-avatar-url"],
+                                getImageUrl(conversation["participant-avatar-url"]),
                           ),
                         ),
                       );
                     },
-                    leading: FutureBuilder(
-                      future: _getDownloadURL(conversation["participant-avatar-url"]),
+                    leading: FutureBuilder<String>(
+                      future:
+                          getImageUrl(conversation["participant-avatar-url"]),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const CircularProgressIndicator();
                         } else if (snapshot.hasError) {
                           return const Icon(Icons.error);
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Icon(Icons.image_not_supported);
                         } else {
                           return CircleAvatar(
                             maxRadius: 28,
-                            backgroundImage: NetworkImage(snapshot.data ?? ''),
+                            backgroundImage: NetworkImage(snapshot.data!),
                           );
                         }
                       },
