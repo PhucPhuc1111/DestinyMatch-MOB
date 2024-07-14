@@ -11,8 +11,7 @@ import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String matchingId, matchingName;
-  final Future<String> matchingImage;
+  final String matchingId, matchingName, matchingImage;
 
   const ChatScreen({
     super.key,
@@ -85,8 +84,6 @@ class _ChatScreenState extends State<ChatScreen> {
       print("Connected to Hub");
       await _hubConnection
           .invoke('JoinGroup', args: [senderId, widget.matchingId]);
-      print(
-          "Joined group with senderId: $senderId and matchingId: ${widget.matchingId}");
     } catch (e) {
       print("Error connecting to hub: $e");
     }
@@ -104,7 +101,6 @@ class _ChatScreenState extends State<ChatScreen> {
             messages.add(message);
           });
           _scrollToBottom();
-          print("Received message: $message");
           messageservice.sendNotification(fcmToken,
               'Bạn nhận được tin nhắn mới từ ${widget.matchingName}', args[1]);
         }
@@ -172,22 +168,9 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             title: Row(
               children: [
-                FutureBuilder<String>(
-                  future: widget.matchingImage,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return const Icon(Icons.error);
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Icon(Icons.image_not_supported);
-                    } else {
-                      return CircleAvatar(
-                        backgroundImage: NetworkImage(snapshot.data!),
-                        minRadius: 25,
-                      );
-                    }
-                  },
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(widget.matchingImage.toString()),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),

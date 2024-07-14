@@ -34,16 +34,6 @@ class _AllChatScreenState extends State<AllChatScreen> {
     }
   }
 
-  Future<String> getImageUrl(String path) async {
-    try {
-      final Reference ref = FirebaseStorage.instance.ref().child(path);
-      final String url = await ref.getDownloadURL();
-      return url;
-    } catch (e) {
-      throw Exception("Failed to load image");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -118,6 +108,7 @@ class _AllChatScreenState extends State<AllChatScreen> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final conversation = matchings[index];
+                print("iamge is: ${conversation["participant-avatar-url"]}");
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: ListTile(
@@ -129,29 +120,14 @@ class _AllChatScreenState extends State<AllChatScreen> {
                             matchingId: conversation["conversation-id"],
                             matchingName: conversation["participant-full-name"],
                             matchingImage:
-                                getImageUrl(conversation["participant-avatar-url"]),
+                                conversation["participant-avatar-url"],
                           ),
                         ),
                       );
                     },
-                    leading: FutureBuilder<String>(
-                      future:
-                          getImageUrl(conversation["participant-avatar-url"]),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return const Icon(Icons.error);
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Icon(Icons.image_not_supported);
-                        } else {
-                          return CircleAvatar(
-                            maxRadius: 28,
-                            backgroundImage: NetworkImage(snapshot.data!),
-                          );
-                        }
-                      },
+                    leading: CircleAvatar(
+                      maxRadius: 28,
+                      backgroundImage: NetworkImage(conversation["participant-avatar-url"]),
                     ),
                     title: Text(
                       conversation["participant-full-name"],
