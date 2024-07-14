@@ -1,12 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FirebaseApi {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   Future<void> initPermission() async {
     await _messaging.requestPermission();
-    String? fcmToken = await _messaging.getToken();
-    print("FCM token: $fcmToken");
+    // String? fcmToken = await _messaging.getToken();
+    // print("FCM token: $fcmToken");
 
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
