@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Accountservice {
-  final String apiLink = "http://10.0.2.2:5107/api";
+  //final String apiLink = "http://10.0.2.2:5107/api";
   //final String apiLink = "http://localhost:5107/api";
-  //final String apiLink = "https://destiny-match.azurewebsites.net/api";
+  final String apiLink = "https://destiny-match.azurewebsites.net/api";
 
   Accountservice();
 

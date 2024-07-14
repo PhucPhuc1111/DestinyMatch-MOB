@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
@@ -28,9 +29,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final Messageservice messageservice = Messageservice();
   late signalr.HubConnection _hubConnection;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   List<dynamic> messages = [];
   String senderId = "";
-
+  String fcmToken = "";
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -48,31 +50,43 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> fetchConversation() async {
-    try {
-      var token = await _storage.read(key: "token");
-      if (token == null) {
-        throw Exception("No token found, please login again");
-      }
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-      var memberId = decodedToken["memberid"];
-      var data = await messageservice.getMessages(widget.matchingId);
-      setState(() {
-        messages = data;
-        senderId = memberId;
-      });
-    } catch (e) {
-      print("Error fetching conversation: $e");
+  try {
+    var token = await _storage.read(key: "token");
+    String? fcmTokendata = await _messaging.getToken();
+    if (token == null) {
+      throw Exception("No token found, please login again");
     }
+
+    print("FCM token: $fcmToken");
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+    var memberId = decodedToken["memberid"];
+    var data = await messageservice.getMessages(widget.matchingId);
+    setState(() {
+      messages = data;
+      senderId = memberId;
+      this.fcmToken = fcmTokendata.toString();
+    });
+
+    print("Fetched conversation fcm is: $fcmToken");
+  } catch (e) {
+    print("Error fetching conversation: $e");
   }
+}
+
 
   Future<void> _connectToHub() async {
     try {
       _hubConnection = signalr.HubConnectionBuilder()
-          .withUrl('http://10.0.2.2:5107/chatHub')
+          //.withUrl('http://10.0.2.2:5107/chatHub')
+          .withUrl('https://destiny-match.azurewebsites.net/chatHub')
           .build();
 
       await _hubConnection.start();
-      await _hubConnection.invoke('JoinGroup', args: [senderId, widget.matchingId]);
+      print("Connected to Hub");
+      await _hubConnection
+          .invoke('JoinGroup', args: [senderId, widget.matchingId]);
+      print(
+          "Joined group with senderId: $senderId and matchingId: ${widget.matchingId}");
     } catch (e) {
       print("Error connecting to hub: $e");
     }
@@ -90,6 +104,9 @@ class _ChatScreenState extends State<ChatScreen> {
             messages.add(message);
           });
           _scrollToBottom();
+          print("Received message: $message");
+          messageservice.sendNotification(fcmToken,
+              'Bạn nhận được tin nhắn mới từ ${widget.matchingName}', args[1]);
         }
       });
     } catch (e) {
