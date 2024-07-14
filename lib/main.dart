@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chats_app/screens/home_screen.dart';
-import 'package:flutter_chats_app/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_chats_app/screens/start_screen.dart';
+import 'package:flutter_chats_app/services/FirebaseApi.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -10,6 +9,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseApi firebaseApi = FirebaseApi();
+  await firebaseApi.initPermission();
   runApp(const MyApp());
 }
 
