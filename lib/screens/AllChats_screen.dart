@@ -122,11 +122,14 @@ class _AllChatScreenState extends State<AllChatScreen> {
                                 conversation["participant-avatar-url"],
                           ),
                         ),
-                      );
+                      ).then((value) {
+                        if (value == true) fetchConversation();
+                      });
                     },
                     leading: CircleAvatar(
                       maxRadius: 28,
-                      backgroundImage: NetworkImage(conversation["participant-avatar-url"]),
+                      backgroundImage:
+                          NetworkImage(conversation["participant-avatar-url"]),
                     ),
                     title: Text(
                       conversation["participant-full-name"],

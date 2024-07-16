@@ -159,7 +159,7 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.only(left: 15),
               child: InkWell(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context,true);
                 },
                 child: const Icon(
                   CupertinoIcons.arrow_left,
