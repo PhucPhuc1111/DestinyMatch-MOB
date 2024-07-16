@@ -19,7 +19,7 @@ class University {
       id: json['id'],
       code: json['code'],
       name: json['name'],
-      members: List<Member>.from(json['members'].map((x) => Member.fromJson(x))),
+      members: [],
     );
   }
 

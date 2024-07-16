@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Accountservice {
   //final String apiLink = "http://10.0.2.2:5107/api";
@@ -28,9 +29,18 @@ class Accountservice {
 
       // Lưu token vào Flutter Secure Storage
       await storage.write(key: "token", value: token);
+
+      // Giải mã token để lấy id
+      final jwt = JwtDecoder.decode(token); // Sử dụng JwtDecoder để giải mã token
+      String userId = jwt['sub']; // Lấy ID từ payload của token
+
+
+
       //print(token);
       // Hoặc lưu trữ thông tin người dùng vào Shared Preferences
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // Lưu id vào Shared Preferences
+      await prefs.setString('userId', userId);
       await prefs.setString('token', jsonEncode(responseBody['token']));
       return true;
     } else {

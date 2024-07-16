@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/screens/home_screen.dart';
+import 'package:flutter_chats_app/screens/registerMember_screen.dart';
 import 'package:flutter_chats_app/screens/signup_screen.dart';
 import 'package:flutter_chats_app/services/AccountService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
@@ -132,12 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        //   Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => ForgotPassScreen(),
-                        //     )
-                        // );
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterMemberScreen(accountId: "",),
+                            )
+                        );
                       },
                       child: const Text(
                         "Forgot your password?",
