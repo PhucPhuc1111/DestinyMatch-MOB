@@ -63,8 +63,10 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       messages = data;
       senderId = memberId;
-      this.fcmToken = fcmTokendata.toString();
+      fcmToken = fcmTokendata.toString();
     });
+
+    _scrollToBottom();
 
     print("Fetched conversation fcm is: $fcmToken");
   } catch (e) {

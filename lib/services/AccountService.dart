@@ -8,11 +8,12 @@ class Accountservice {
   //final String apiLink = "http://localhost:5107/api";
   final String apiLink = "https://destiny-match.azurewebsites.net/api";
 
+  final storage = const FlutterSecureStorage();
+
   Accountservice();
 
   Future<bool> login(String email, String password) async {
     final url = Uri.parse("$apiLink/accounts/login");
-    const storage = FlutterSecureStorage();
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -39,10 +40,8 @@ class Accountservice {
     }
   }
 
-  Future<bool> checkAccountLogin() async {
-    const storage = FlutterSecureStorage();
+  Future<bool> isLoggedIn() async {
     var token = await storage.read(key: "token");
-    
     return token != null;
   }
 }

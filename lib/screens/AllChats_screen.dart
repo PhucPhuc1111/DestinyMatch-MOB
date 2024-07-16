@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/screens/chat_sceen.dart';
 import 'package:flutter_chats_app/services/MatchingService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class AllChatScreen extends StatefulWidget {
   const AllChatScreen({super.key});
