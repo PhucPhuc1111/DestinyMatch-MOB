@@ -1,11 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_chats_app/services/AccountService.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FirebaseApi {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   Future<void> initPermission() async {
+    Accountservice accountservice = Accountservice();
     await _messaging.requestPermission(
       alert: true,
       announcement: false,
@@ -15,9 +17,7 @@ class FirebaseApi {
       provisional: false,
       sound: true,
     );
-    String? fcmToken = await _messaging.getToken();
-    print('FCM Token: $fcmToken');
-    await _storage.write(key: "fcmtoken", value: fcmToken);
+    
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');

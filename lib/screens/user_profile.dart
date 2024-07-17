@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chats_app/screens/login_screen.dart';
 import 'package:flutter_chats_app/screens/personal_data_screen.dart';
 import 'package:flutter_chats_app/services/AccountService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
@@ -36,68 +37,70 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
                 const SizedBox(width: 15),
-                const Expanded(child: Column(
+                const Expanded(
+                    child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Dear programmer",
-                    style: TextStyle(
-                      color: AppColors.blackColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    Text(
+                      "Dear programmer",
+                      style: TextStyle(
+                        color: AppColors.blackColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    ),
-                    Text("YouTuber",
-                    style: TextStyle(
-                      color: AppColors.grayColor,
-                      fontSize: 12,
-                    ),
+                    Text(
+                      "YouTuber",
+                      style: TextStyle(
+                        color: AppColors.grayColor,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 )),
                 SizedBox(
-              width: 70,
-              height: 40,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: AppColors.primaryG,
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 2,
-                      offset: Offset(0,2),
+                  width: 70,
+                  height: 40,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: AppColors.primaryG,
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black,
+                          blurRadius: 2,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: MaterialButton(
-                  minWidth: double.maxFinite,
-                  height: 50,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)
-                        => const PersonalDataScreen(),
-                      )
-                    );
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  textColor: AppColors.primaryColor1,
-                  child: const Text(
-                    "Edit",
-                    style: TextStyle(
-                      color: AppColors.whiteColor,
-                      fontWeight: FontWeight.w400,
+                    child: MaterialButton(
+                      minWidth: double.maxFinite,
+                      height: 50,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PersonalDataScreen(),
+                            ));
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      textColor: AppColors.primaryColor1,
+                      child: const Text(
+                        "Edit",
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
               ],
             ),
             const SizedBox(height: 30),
@@ -107,11 +110,11 @@ class _UserProfileState extends State<UserProfile> {
                   child: TitleSubtitleCell(title: "456", subtitle: "Friends"),
                 ),
                 SizedBox(width: 15),
-                 Expanded(
+                Expanded(
                   child: TitleSubtitleCell(title: "456", subtitle: "followers"),
                 ),
                 SizedBox(width: 15),
-                 Expanded(
+                Expanded(
                   child: TitleSubtitleCell(title: "456", subtitle: "Likes"),
                 ),
               ],
@@ -144,9 +147,8 @@ class _UserProfileState extends State<UserProfile> {
                   SettingRow(
                     icon: "assets/icons/p_personal.png",
                     title: "Personal Data",
-                    onPressed: (){},
+                    onPressed: () {},
                   ),
-                  
                 ],
               ),
             ),
@@ -178,28 +180,32 @@ class _UserProfileState extends State<UserProfile> {
                   SettingRow(
                     icon: "assets/icons/p_contact.png",
                     title: "Contact Us",
-                    onPressed: (){},
+                    onPressed: () {},
                   ),
                   SettingRow(
                     icon: "assets/icons/p_privacy.png",
                     title: "privacy Policy",
-                    onPressed: (){},
+                    onPressed: () {},
                   ),
                   SettingRow(
                     icon: "assets/icons/p_setting.png",
                     title: "Settings",
-                    onPressed: (){},
+                    onPressed: () {},
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 30),
-            RoundGradientButton(title: "Log Out", onPressed: (){
-              _accountservice.LogOut();
-              Navigator.pop(context);
-            }
-            
-            ),
+            RoundGradientButton(
+                title: "Log Out",
+                onPressed: () {
+                  _accountservice.logOut();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ));
+                }),
           ],
         ),
       ),
