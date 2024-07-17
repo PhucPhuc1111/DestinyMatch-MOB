@@ -107,7 +107,6 @@ class _AllChatScreenState extends State<AllChatScreen> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final conversation = matchings[index];
-                print("iamge is: ${conversation["participant-avatar-url"]}");
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: ListTile(

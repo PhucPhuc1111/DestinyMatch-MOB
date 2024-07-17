@@ -44,4 +44,10 @@ class Accountservice {
     var token = await storage.read(key: "token");
     return token != null;
   }
+
+  Future<void> LogOut() async {
+    await storage.delete(key: "token");
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+  }
 }

@@ -42,18 +42,18 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDejU9euNTGJ0EqtuJ2hJGBhgNi2qw05W4',
-    appId: '1:980721620844:web:7c8e1a7b7af56e85340549',
+    appId: '1:980721620844:web:a3d9fb8100358a28340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     authDomain: 'destinymatch-70b72.firebaseapp.com',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'destinymatch-70b72.appspot.com',
-    measurementId: 'G-MFZTPPGLH0',
+    measurementId: 'G-DHCPRH8Y4G',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAN_0pw3WWyKwMWEvGQPetpzIsWYHBtiHQ',
-    appId: '1:980721620844:android:3f5d5ccfa11b215d340549',
+    appId: '1:980721620844:android:d96cba69c0a25821340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
@@ -62,33 +62,33 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCsG56vEYE7eqi_N--QC-C_XO--kmwRA8I',
-    appId: '1:980721620844:ios:7ff1408727c0809c340549',
+    appId: '1:980721620844:ios:0fd94c3700ca621f340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'destinymatch-70b72.appspot.com',
-    iosBundleId: 'com.example.destinymatch',
+    iosBundleId: 'com.example.destinymatchMob',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCsG56vEYE7eqi_N--QC-C_XO--kmwRA8I',
-    appId: '1:980721620844:ios:8ed6451927f0bceb340549',
+    appId: '1:980721620844:ios:0fd94c3700ca621f340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'destinymatch-70b72.appspot.com',
-    iosBundleId: 'com.example.flutterChatsApp',
+    iosBundleId: 'com.example.destinymatchMob',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDejU9euNTGJ0EqtuJ2hJGBhgNi2qw05W4',
-    appId: '1:980721620844:web:5930dee4b6136962340549',
+    appId: '1:980721620844:web:496d4557d9580d78340549',
     messagingSenderId: '980721620844',
     projectId: 'destinymatch-70b72',
     authDomain: 'destinymatch-70b72.firebaseapp.com',
     databaseURL: 'https://destinymatch-70b72-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'destinymatch-70b72.appspot.com',
-    measurementId: 'G-GF1FK104MQ',
+    measurementId: 'G-37B27FTGBY',
   );
 
 }

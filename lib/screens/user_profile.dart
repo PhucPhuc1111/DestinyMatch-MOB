@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/screens/personal_data_screen.dart';
+import 'package:flutter_chats_app/services/AccountService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/round_gradient_button.dart';
 import 'package:flutter_chats_app/widgets/setting_row.dart';
@@ -13,6 +14,7 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  final Accountservice _accountservice = Accountservice();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -192,7 +194,10 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
             const SizedBox(height: 30),
-            RoundGradientButton(title: "Log Out", onPressed: (){}
+            RoundGradientButton(title: "Log Out", onPressed: (){
+              _accountservice.LogOut();
+              Navigator.pop(context);
+            }
             
             ),
           ],

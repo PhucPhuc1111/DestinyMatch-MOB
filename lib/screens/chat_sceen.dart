@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
@@ -8,7 +7,6 @@ import 'package:signalr_core/signalr_core.dart' as signalr;
 import 'package:flutter_chats_app/services/MessageService.dart';
 import 'package:flutter_chats_app/widgets/bottom_chat_sheet.dart';
 import 'package:flutter_chats_app/widgets/chat_message_sample.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class ChatScreen extends StatefulWidget {
   final String matchingId, matchingName, matchingImage;
@@ -28,7 +26,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final Messageservice messageservice = Messageservice();
   late signalr.HubConnection _hubConnection;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   List<dynamic> messages = [];
   String senderId = "";
   String fcmToken = "";
@@ -49,31 +46,28 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> fetchConversation() async {
-  try {
-    var token = await _storage.read(key: "token");
-    String? fcmTokendata = await _messaging.getToken();
-    if (token == null) {
-      throw Exception("No token found, please login again");
+    try {
+      var token = await _storage.read(key: "token");
+      var fcmTokendata = await _storage.read(key: "fcmtoken");
+      if (token == null) {
+        throw Exception("No token found, please login again");
+      }
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      var memberId = decodedToken["memberid"];
+      var data = await messageservice.getMessages(widget.matchingId);
+      setState(() {
+        messages = data;
+        senderId = memberId;
+        fcmToken = fcmTokendata.toString();
+      });
+
+      _scrollToBottom();
+
+      print("Fetched conversation fcm is: $fcmToken");
+    } catch (e) {
+      print("Error fetching conversation: $e");
     }
-
-    print("FCM token: $fcmToken");
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-    var memberId = decodedToken["memberid"];
-    var data = await messageservice.getMessages(widget.matchingId);
-    setState(() {
-      messages = data;
-      senderId = memberId;
-      fcmToken = fcmTokendata.toString();
-    });
-
-    _scrollToBottom();
-
-    print("Fetched conversation fcm is: $fcmToken");
-  } catch (e) {
-    print("Error fetching conversation: $e");
   }
-}
-
 
   Future<void> _connectToHub() async {
     try {
@@ -112,6 +106,14 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  void _leaveGroup() async {
+    try {
+      await _hubConnection.invoke('LeaveGroup', args: [widget.matchingId]);
+    } catch (e) {
+      print("Error leaving group: $e");
+    }
+  }
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -122,16 +124,6 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }
     });
-  }
-
-  Future<String> getImageUrl(String path) async {
-    try {
-      final Reference ref = FirebaseStorage.instance.ref().child(path);
-      final String url = await ref.getDownloadURL();
-      return url;
-    } catch (e) {
-      throw Exception("Failed to load image");
-    }
   }
 
   @override
@@ -159,7 +151,8 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.only(left: 15),
               child: InkWell(
                 onTap: () {
-                  Navigator.pop(context,true);
+                  _leaveGroup();
+                  Navigator.pop(context, true);
                 },
                 child: const Icon(
                   CupertinoIcons.arrow_left,
@@ -172,7 +165,8 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: NetworkImage(widget.matchingImage.toString()),
+                  backgroundImage:
+                      NetworkImage(widget.matchingImage.toString()),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
