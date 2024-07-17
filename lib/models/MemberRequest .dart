@@ -1,14 +1,14 @@
 class MemberRequest {
   final String? fullname;
   final String? introduce;
-  final String? dob; // Giữ nguyên như là String
+  final String? dob; 
   final bool? gender;
   final String? address;
   final int? surplus;
   final String? status;
-  final String accountId; // Đảm bảo là không nullable
-  final String universityId; // Đảm bảo là không nullable
-  final String majorId; // Đảm bảo là không nullable
+  final String? accountId; 
+  final String universityId; 
+  final String majorId; 
 
   MemberRequest({
     this.fullname,

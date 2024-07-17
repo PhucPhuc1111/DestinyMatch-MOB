@@ -6,6 +6,7 @@ import 'package:flutter_chats_app/services/AccountService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/round_gradient_button.dart';
 import 'package:flutter_chats_app/widgets/round_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,20 +14,37 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
-
 Future<void> Login(BuildContext context, String email, String password) async {
   final Accountservice accountService = Accountservice();
-  if (await accountService.login(email, password)) {
-    Navigator.push(
+
+ 
+  bool loginSuccess = await accountService.login(email, password);
+
+  if (loginSuccess) {
+    
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+
+    
+    if (userId != null && await accountService.checkAccountExists(userId)) {
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => const HomeScreen(),
-        ));
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegisterMemberScreen(accountId: userId ?? ''),
+        ),
+      );
+    }
   } else {
     print("Login failed");
   }
 }
-
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
@@ -133,12 +151,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                          Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterMemberScreen(accountId: "",),
-                            )
-                        );
+                        //   Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => ChangePassWord(),
+                        //     )
+                        // );
                       },
                       child: const Text(
                         "Forgot your password?",

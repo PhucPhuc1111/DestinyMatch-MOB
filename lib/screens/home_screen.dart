@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const HomeCartScreen(),
           const AllChatScreen(),
-          RegisterMemberScreen(accountId: _accountId), // Use _accountId here
+          Container(),
           const UserProfile(),
         ],
       ),

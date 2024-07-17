@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chats_app/models/Hobby.dart';
 import 'package:flutter_chats_app/models/Major.dart';
 import 'package:flutter_chats_app/models/MemberRequest%20.dart';
 import 'package:flutter_chats_app/models/University.dart';
-import 'package:flutter_chats_app/services/RegisterMemberService.dart'; // Thay thế bằng RegisterMemberService
 import 'package:flutter_chats_app/screens/home_screen.dart';
+import 'package:flutter_chats_app/services/EditMemberService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/date_of_birth.dart';
 import 'package:flutter_chats_app/widgets/round_gradient_button.dart';
 import 'package:flutter_chats_app/widgets/round_text_field.dart';
 
-class RegisterMemberScreen extends StatefulWidget {
-  final String? accountId;
+class EditMemberScreen extends StatefulWidget {
+  final String accountId;
 
-  const RegisterMemberScreen({required this.accountId, super.key});
+  const EditMemberScreen({required this.accountId, super.key});
 
   @override
-  State<RegisterMemberScreen> createState() => _RegisterMemberScreenState();
+  State<EditMemberScreen> createState() => _EditMemberScreenState();
 }
 
-class _RegisterMemberScreenState extends State<RegisterMemberScreen> {
+class _EditMemberScreenState extends State<EditMemberScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _introduceController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
@@ -28,42 +27,33 @@ class _RegisterMemberScreenState extends State<RegisterMemberScreen> {
   String? _gender;
   String? _selectedUniversityId;
   String? _selectedMajorId;
+  String? _memberId;
 
   List<Major> _majorOptions = [];
   List<University> _universityOptions = [];
   bool _isLoadingMajors = true;
   bool _isLoadingUniversities = true;
-  List<Hobby> _hobbyOptions = [];
-List<String> _selectedHobbyIds = [];
-bool _isLoadingHobbies = true;
 
   @override
   void initState() {
     super.initState();
     _fetchUniversities();
     _fetchMajors();
-    _fetchHobbies();
-
+    _fetchMemberData();
   }
 
-  Future<void> _fetchHobbies() async {
-  try {
-    final service = RegisterMemberService();
-    final hobbies = await service.fetchHobbies();
-    setState(() {
-      _hobbyOptions = hobbies;
-      _isLoadingHobbies = false;
-    });
-  } catch (e) {
-    print('Error fetching hobbies: $e');
-    setState(() {
-      _isLoadingHobbies = false;
-    });
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _introduceController.dispose();
+    _dobController.dispose();
+    _addressController.dispose();
+    super.dispose();
   }
-}
+
   Future<void> _fetchUniversities() async {
     try {
-      final service = RegisterMemberService();
+      final service = EditMemberService();
       final universities = await service.fetchUniversities();
       setState(() {
         _universityOptions = universities;
@@ -79,7 +69,7 @@ bool _isLoadingHobbies = true;
 
   Future<void> _fetchMajors() async {
     try {
-      final service = RegisterMemberService();
+      final service = EditMemberService();
       final majors = await service.fetchMajors();
       setState(() {
         _majorOptions = majors;
@@ -90,6 +80,27 @@ bool _isLoadingHobbies = true;
       setState(() {
         _isLoadingMajors = false;
       });
+    }
+  }
+
+  Future<void> _fetchMemberData() async {
+    try {
+      final service = EditMemberService();
+      final member = await service.getMemberByAccountId(widget.accountId);
+      if (member != null) {
+        setState(() {
+          _fullNameController.text = member.fullname ?? '';
+          _introduceController.text = member.introduce ?? '';
+          _dobController.text = member.dob?.toLocal().toString().split(' ')[0] ?? '';
+          _addressController.text = member.address ?? '';
+          _gender = member.gender == true ? 'Male' : (member.gender == false ? 'Female' : null);
+          _selectedUniversityId = member.universityId;
+          _selectedMajorId = member.majorId;
+          _memberId = member.id;
+        });
+      }
+    } catch (e) {
+      print('Error fetching member data: $e');
     }
   }
 
@@ -108,7 +119,7 @@ bool _isLoadingHobbies = true;
                 children: [
                   SizedBox(height: media.height * 0.1),
                   const Text(
-                    "Register Member",
+                    "Edit Member",
                     style: TextStyle(
                       color: AppColors.blackColor,
                       fontSize: 20,
@@ -153,7 +164,6 @@ bool _isLoadingHobbies = true;
                       return null;
                     },
                   ),
-
                   SizedBox(height: media.height * 0.02),
                   RoundTextField(
                     textEditingController: _addressController,
@@ -215,100 +225,51 @@ bool _isLoadingHobbies = true;
                       return null;
                     },
                   ),
-
-
                   SizedBox(height: media.height * 0.02),
                   Container(
                     color: Colors.white,
                     child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text("Male"),
-                          value: 'Male',
-                          groupValue: _gender,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                          tileColor: Colors.grey[200],
-                          activeColor: AppColors.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text("Female"),
-                          value: 'Female',
-                          groupValue: _gender,
-                          onChanged: (String? value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                          tileColor: Colors.grey[200],
-                          activeColor: AppColors.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ],
-                  ),
-                  
-
-                  ),
-
-                  SizedBox(height: media.height * 0.02),
-                const Text(
-                  "Select Hobbies",
-                  style: TextStyle(
-                    color: AppColors.blackColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(height: media.height * 0.02),
-                _isLoadingHobbies
-                    ? const CircularProgressIndicator()
-                    : Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: _hobbyOptions.map((hobby) {
-                          final isSelected = _selectedHobbyIds.contains(hobby.id);
-                          return GestureDetector(
-                            onTap: () {
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text("Male"),
+                            value: 'Male',
+                            groupValue: _gender,
+                            onChanged: (String? value) {
                               setState(() {
-                                if (isSelected) {
-                                  _selectedHobbyIds.remove(hobby.id);
-                                } else {
-                                  _selectedHobbyIds.add(hobby.id);
-                                }
+                                _gender = value;
                               });
                             },
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: isSelected ? Colors.blue : Colors.grey,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                hobby.name ?? '',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-
+                            tileColor: Colors.grey[200],
+                            activeColor: AppColors.primaryColor,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text("Female"),
+                            value: 'Female',
+                            groupValue: _gender,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _gender = value;
+                              });
+                            },
+                            tileColor: Colors.grey[200],
+                            activeColor: AppColors.primaryColor,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: media.height * 0.05),
                   RoundGradientButton(
-                    title: "Register",
+                    title: "Save",
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        _register();
+                        _updateMember();
                       }
                     },
                   ),
@@ -321,39 +282,46 @@ bool _isLoadingHobbies = true;
     );
   }
 
-  Future<void> _register() async {
-  final registerMemberService = RegisterMemberService();
-  final universityId = _selectedUniversityId ?? '';
-  final majorId = _selectedMajorId ?? '';
-
-  final registrationRequest = MemberRequest(
-    fullname: _fullNameController.text,
-    introduce: _introduceController.text,
-    dob: _dobController.text, // Đảm bảo là chuỗi ngày (YYYY-MM-DD)
-    gender: _gender == 'Male' ? true : (_gender == 'Female' ? false : null),
-    address: _addressController.text,
-    surplus: 0,
-    status: "string",
-    accountId: widget.accountId,
-    universityId: universityId,
-    majorId: majorId,
-  );
-
-  try {
-    final success = await registerMemberService.register(registrationRequest);
-    if (success) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-    } else {
-      // Hiển thị thông báo lỗi
-      print("Registration failed");
-    }
-  } catch (e) {
-    // Hiển thị thông báo lỗi
-    print("Exception occurred: $e");
+  Future<void> _updateMember() async {
+    if (_memberId == null) {
+    print('Member ID is null');
+    return;
   }
-}
+    final editMemberService = EditMemberService();
+    final universityId = _selectedUniversityId ?? '';
+    final majorId = _selectedMajorId ?? '';
 
+    final memberRequest = MemberRequest(
+      fullname: _fullNameController.text,
+      introduce: _introduceController.text,
+      dob: _dobController.text, // Đảm bảo là chuỗi ngày (YYYY-MM-DD)
+      gender: _gender == 'Male' ? true : (_gender == 'Female' ? false : null),
+      address: _addressController.text,
+      surplus: 0,
+      status: "string",
+      accountId: widget.accountId,
+      universityId: universityId,
+      majorId: majorId,
+    );
+
+    try {
+      final success = await editMemberService.updateMember(_memberId!, memberRequest);
+      if (success) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
+        // Hiển thị thông báo lỗi
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Update failed")),
+        );
+      }
+    } catch (e) {
+      // Hiển thị thông báo lỗi
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Exception occurred: $e")),
+      );
+    }
+  }
 }

@@ -49,6 +49,24 @@ class Accountservice {
     }
   }
 
+   Future<bool> checkAccountExists(String accountId) async {
+  if (accountId == null || accountId.isEmpty) {
+    print('AccountId is null or empty');
+    return false;
+  }
+
+  final url = Uri.parse("$apiLink/member/exists?accountId=$accountId");
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
+    return jsonResponse == true;
+  } else {
+    print('Failed to check account existence: ${response.body}');
+    return false;
+  }
+}
+
   Future<bool> checkAccountLogin() async {
     const storage = FlutterSecureStorage();
     var token = await storage.read(key: "token");
