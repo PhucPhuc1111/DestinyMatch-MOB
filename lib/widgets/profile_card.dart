@@ -5,12 +5,14 @@ import 'package:flutter_chats_app/utils/app_colors.dart';
 class ProfileCard extends StatelessWidget {
   const ProfileCard({
     super.key,
+    required this.id,
     required this.image,
     required this.name,
     required this.description,
     required this.age,
   });
 
+  final String id;
   final String image;
   final String name;
   final String description;
@@ -30,7 +32,7 @@ class ProfileCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UserInfoPage(image: image),
+                  builder: (context) => UserInfoPage(image: image, id: id),
                 ),
               );
             },
