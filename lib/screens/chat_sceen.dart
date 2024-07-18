@@ -72,8 +72,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _connectToHub() async {
     try {
       _hubConnection = signalr.HubConnectionBuilder()
-          .withUrl('http://10.0.2.2:5107/chatHub')
-          // .withUrl('https://destiny-match.azurewebsites.net/chatHub')
+          // .withUrl('http://10.0.2.2:5107/chatHub')
+          .withUrl('https://destiny-match.azurewebsites.net/chatHub')
           .build();
 
       await _hubConnection.start();

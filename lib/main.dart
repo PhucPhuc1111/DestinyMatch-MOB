@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
         ),
         home: FutureBuilder<bool>(
-            future: _accountservice.isLoggedIn(),
+            future: _accountservice.checkAccountLogin(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator(); // Show a loading indicator while checking

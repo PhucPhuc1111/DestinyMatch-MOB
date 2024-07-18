@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chats_app/screens/login_screen.dart';
 import 'package:flutter_chats_app/screens/personal_data_screen.dart';
+import 'package:flutter_chats_app/services/AccountService.dart';
 import 'package:flutter_chats_app/services/EditMemberService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/round_gradient_button.dart';
@@ -18,7 +20,7 @@ class _UserProfileState extends State<UserProfile> {
   String _accountId = "";
   String _fullname = "Loading...";
   bool _isLoading = true;
-
+  Accountservice accountservice = Accountservice();
   @override
   void initState() {
     super.initState();
@@ -28,12 +30,12 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _loadAccountId() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('userId');
-     if (userId != null) {
+    if (userId != null) {
       setState(() {
         _accountId = userId;
       });
       _fetchMemberData();
-     }
+    }
   }
 
   Future<void> _fetchMemberData() async {
@@ -103,7 +105,7 @@ class _UserProfileState extends State<UserProfile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _isLoading
-                          ? CircularProgressIndicator() 
+                          ? CircularProgressIndicator()
                           : Text(
                               "Dear $_fullname",
                               style: TextStyle(
@@ -215,14 +217,14 @@ class _UserProfileState extends State<UserProfile> {
                     icon: "assets/icons/p_personal.png",
                     title: "Personal Data",
                     onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                PersonalDataScreen(accountId: _accountId),
-                          ),
-                        );
-                      },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PersonalDataScreen(accountId: _accountId),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -271,7 +273,17 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
             const SizedBox(height: 30),
-            RoundGradientButton(title: "Log Out", onPressed: () {}),
+            RoundGradientButton(
+                title: "Log Out",
+                onPressed: () {
+                  accountservice.logOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                }),
           ],
         ),
       ),
