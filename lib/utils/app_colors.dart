@@ -43,6 +43,8 @@ class AppColors{
 
   static List<Color> get primaryG => [primaryColor1, primaryColor2];
   static List<Color> get secondaryG => [secondaryColor1, secondaryColor2];
+
+  static List<Color> get customMain => [hexToColor('#d51e5e'),hexToColor('#fc709c'), hexToColor('#ffd1da')];
 }
 
 Color hexToColor(String hex) {

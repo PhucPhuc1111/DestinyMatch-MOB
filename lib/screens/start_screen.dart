@@ -19,13 +19,13 @@ class StartScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                "assets/images/welcome_promo.png",
+                "assets/images/LoadScreen-logo.png",
                 width: media.width * 0.80,
                 fit: BoxFit.fitWidth,
               ),
               SizedBox(height: media.width*0.05,),
               const Text(
-                "Welcome",
+                "Destiny Match",
                 style: TextStyle(
                   color: AppColors.blackColor,
                   fontSize: 28,
@@ -34,7 +34,7 @@ class StartScreen extends StatelessWidget {
               ),
               SizedBox(height: media.width * 0.03),
               const Text(
-                "You are all set now, let's chat with\nyour loved ones",
+                "Định mệnh đã \"ship\" bạn với ai đó\nhãy khám phá ngay!",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.grayColor,
@@ -52,7 +52,7 @@ class StartScreen extends StatelessWidget {
                     )
                   );
                 },
-                title: "Get Started",
+                title: "Xem thử   ➤",
               )
             ],
           ),
