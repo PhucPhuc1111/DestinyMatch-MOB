@@ -15,13 +15,16 @@ class HomeCartScreen extends StatefulWidget {
 
 class _HomeCartState extends State<HomeCartScreen> {
   List<ProfileCard> profile = [];
+  final TextEditingController minAgeController = TextEditingController();
+  final TextEditingController maxAgeController = TextEditingController();
 
-  Future<void> _fetchMembers() async {
+  Future<void> _fetchMembers({int minAge = 0, int maxAge = 100}) async {
     try {
       final response = await http.get(Uri.parse(
-          'https://destiny-match.azurewebsites.net/api/member?pagesize=20'));
+          'https://destiny-match.azurewebsites.net/api/member?minAge=$minAge&maxAge=$maxAge&pagesize=22'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body)['data'];
+        List<ProfileCard> fetchedProfiles = [];
         for (var member in data) {
           String id = member['id'];
           String imageUrl =
@@ -30,9 +33,9 @@ class _HomeCartState extends State<HomeCartScreen> {
                   : 'assets/images/Smith.jpg';
           String name = member['fullname'] ?? 'No Name';
           String description = member['introduce'] ?? 'No Description';
-          String age = member['dob'] ?? '23';
+          String age = _calculateAge(member['dob'] ?? '2000-01-01').toString();
 
-          profile.add(ProfileCard(
+          fetchedProfiles.add(ProfileCard(
             id: id,
             image: imageUrl,
             name: name,
@@ -40,14 +43,26 @@ class _HomeCartState extends State<HomeCartScreen> {
             age: age,
           ));
         }
-        setState(() {}); // Refresh UI after data is fetched
+        setState(() {
+          profile = fetchedProfiles;
+        });
       } else {
         throw Exception('Failed to load member data');
       }
     } catch (e) {
       print('Error fetching member data: $e');
-      // Handle error gracefully
     }
+  }
+
+  int _calculateAge(String dob) {
+    DateTime birthDate = DateTime.parse(dob);
+    DateTime today = DateTime.now();
+    int age = today.year - birthDate.year;
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+    return age;
   }
 
   Future<void> _sendFavorite(String memberId) async {
@@ -69,6 +84,36 @@ class _HomeCartState extends State<HomeCartScreen> {
     } catch (e) {
       print('Error sending favorite: $e');
     }
+  }
+
+  void _showTopSnackBar(BuildContext context, String message) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 50,
+        left: MediaQuery.of(context).size.width * 0.1,
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.7),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay?.insert(overlayEntry);
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
   }
 
   @override
@@ -124,23 +169,53 @@ class _HomeCartState extends State<HomeCartScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            "filter options",
+                            "Filter options",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 16),
-                          const TextField(
-                            decoration: InputDecoration(
-                              labelText: "Option 2",
-                              border: OutlineInputBorder(),
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: minAgeController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    labelText: "Min Age",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: TextField(
+                                  controller: maxAgeController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    labelText: "Max Age",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
-                              // Xử lý khi nhấn nút "Apply"
+                              if (minAgeController.text.isNotEmpty &&
+                                  maxAgeController.text.isNotEmpty) {
+                                int minAge = int.parse(minAgeController.text);
+                                int maxAge = int.parse(maxAgeController.text);
+                                _fetchMembers(minAge: minAge, maxAge: maxAge);
+                                Navigator.pop(context);
+                              } else {
+                                _showTopSnackBar(
+                                  context,
+                                  'Both fields are required',
+                                );
+                              }
                             },
                             child: const Text("Apply"),
                           ),
@@ -149,7 +224,6 @@ class _HomeCartState extends State<HomeCartScreen> {
                     );
                   },
                 );
-                // Xử lý sự kiện khi nhấn nút "Filter"
               },
             ),
           ),
