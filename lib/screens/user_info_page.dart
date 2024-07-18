@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserInfoPage extends StatelessWidget {
-  UserInfoPage({ super.key, required this.image,x});
+  UserInfoPage({super.key, required this.image, required this.id, x});
+  final String id;
   final String image;
   List<String> images = [
     'assets/images/Christine.jpg',
@@ -13,6 +17,27 @@ class UserInfoPage extends StatelessWidget {
     'assets/images/Smith.jpg',
   ];
 
+  Future<void> _sendFavorite(String memberId) async {
+    final storage = FlutterSecureStorage();
+    String? token = await storage.read(key: 'token');
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://destiny-match.azurewebsites.net/api/matching'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'to-member-id': memberId}),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to send favorite');
+      }
+    } catch (e) {
+      print('Error sending favorite: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +47,10 @@ class UserInfoPage extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 24),
           child: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor,),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.primaryColor,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -33,7 +61,10 @@ class UserInfoPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 8),
             child: IconButton(
-              icon: Icon(Icons.more_vert, color: AppColors.primaryColor,),
+              icon: Icon(
+                Icons.more_vert,
+                color: AppColors.primaryColor,
+              ),
               onPressed: () {},
             ),
           ),
@@ -41,32 +72,36 @@ class UserInfoPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 2,
-                  margin: const EdgeInsets.only(left: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(50)),
-                    image: DecorationImage(
-                      image: AssetImage(image),
-                      fit: BoxFit.fitWidth,
-                      alignment: Alignment.topCenter,
-                      scale: 1.1,
-                    ),
+          CustomScrollView(slivers: [
+            SliverToBoxAdapter(
+              child: Container(
+                height: MediaQuery.of(context).size.height / 2,
+                margin: const EdgeInsets.only(left: 20),
+                decoration: BoxDecoration(
+                  borderRadius:
+                      const BorderRadius.only(bottomLeft: Radius.circular(50)),
+                  image: DecorationImage(
+                    image: NetworkImage(image),
+                    fit: BoxFit.fitWidth,
+                    alignment: Alignment.topCenter,
+                    scale: 1.1,
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.only(left: 20, top: 20),
                 child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Text('Malena Veronica, 23', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500, color: AppColors.secondary)),
+                        Text('Malena Veronica, 23',
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.secondary)),
                         const SizedBox(width: 10),
                         Container(
                           width: 10,
@@ -78,32 +113,91 @@ class UserInfoPage extends StatelessWidget {
                         )
                       ],
                     ),
-                    const SizedBox(height: 8,),
-                    Text('Fashion Designer at Victoria Secret', style: TextStyle(color: AppColors.secondary, fontSize: 16)),
-                    const SizedBox(height: 8,),
-                    Text('69m away', style: TextStyle(color: AppColors.secondary, fontSize: 16)),
-                    const SizedBox(height: 32,),
-                    Text('ABOUT ME', style: TextStyle(color: AppColors.secondary, fontSize: 18, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 8,),
-                    Text('Hey guys, This is Malena. I’m here to find someone for hookup. I’m not interested in something serious. I would love to hear your adventurous story.', style: TextStyle(color: AppColors.secondary, fontSize: 16, height: 1.5, fontWeight: FontWeight.normal)),
-                    const SizedBox(height: 32,),
-                    Text('INTERESTS', style: TextStyle(color: AppColors.secondary, fontSize: 18, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 8,),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text('Fashion Designer at Victoria Secret',
+                        style: TextStyle(
+                            color: AppColors.secondary, fontSize: 16)),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text('69m away',
+                        style: TextStyle(
+                            color: AppColors.secondary, fontSize: 16)),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    Text('ABOUT ME',
+                        style: TextStyle(
+                            color: AppColors.secondary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500)),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                        'Hey guys, This is Malena. I’m here to find someone for hookup. I’m not interested in something serious. I would love to hear your adventurous story.',
+                        style: TextStyle(
+                            color: AppColors.secondary,
+                            fontSize: 16,
+                            height: 1.5,
+                            fontWeight: FontWeight.normal)),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    Text('INTERESTS',
+                        style: TextStyle(
+                            color: AppColors.secondary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500)),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     Wrap(
                       spacing: 10,
                       children: [
-                        _chip(background: AppColors.lightOrange, color: AppColors.brightOrange, title: 'Travel'),
-                        _chip(background: AppColors.lightBlue, color: AppColors.brightBlue, title: 'Dance'),
-                        _chip(background: AppColors.lightOrange1, color: AppColors.brightOrange1, title: 'Fitness'),
-                        _chip(background: AppColors.lightPurple, color: AppColors.brightPurple, title: 'Reading'),
-                        _chip(background: AppColors.lightPurple1, color: AppColors.brightPurple1, title: 'Photography'),
-                        _chip(background: AppColors.lightGreen, color: AppColors.brightGreen, title: 'Music'),
-                        _chip(background: AppColors.lightPink, color: AppColors.brightPink, title: 'Movie'),
+                        _chip(
+                            background: AppColors.lightOrange,
+                            color: AppColors.brightOrange,
+                            title: 'Travel'),
+                        _chip(
+                            background: AppColors.lightBlue,
+                            color: AppColors.brightBlue,
+                            title: 'Dance'),
+                        _chip(
+                            background: AppColors.lightOrange1,
+                            color: AppColors.brightOrange1,
+                            title: 'Fitness'),
+                        _chip(
+                            background: AppColors.lightPurple,
+                            color: AppColors.brightPurple,
+                            title: 'Reading'),
+                        _chip(
+                            background: AppColors.lightPurple1,
+                            color: AppColors.brightPurple1,
+                            title: 'Photography'),
+                        _chip(
+                            background: AppColors.lightGreen,
+                            color: AppColors.brightGreen,
+                            title: 'Music'),
+                        _chip(
+                            background: AppColors.lightPink,
+                            color: AppColors.brightPink,
+                            title: 'Movie'),
                       ],
                     ),
-                    const SizedBox(height: 24,),
-                    Text('INSTAGRAM PHOTOS', style: TextStyle(color: AppColors.secondary, fontSize: 18, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 8,),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    Text('INSTAGRAM PHOTOS',
+                        style: TextStyle(
+                            color: AppColors.secondary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500)),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     SizedBox(
                       height: 120,
                       child: ListView.builder(
@@ -127,13 +221,14 @@ class UserInfoPage extends StatelessWidget {
                         },
                       ),
                     ),
-                    const SizedBox(height: 100,)
+                    const SizedBox(
+                      height: 100,
+                    )
                   ],
                 ),
               ),
-              ),
-            ]
-          ),
+            ),
+          ]),
           Positioned(
             bottom: 0,
             right: 0,
@@ -156,7 +251,7 @@ class UserInfoPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   InkWell(
-                    onTap: () { },
+                    onTap: () {},
                     child: Container(
                       width: 64,
                       height: 64,
@@ -171,11 +266,15 @@ class UserInfoPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Icon(Icons.close, color: AppColors.close, size: 32,),
+                      child: Icon(
+                        Icons.close,
+                        color: AppColors.close,
+                        size: 32,
+                      ),
                     ),
                   ),
                   InkWell(
-                    onTap: () { },
+                    onTap: () {},
                     child: Container(
                       width: 56,
                       height: 56,
@@ -190,11 +289,17 @@ class UserInfoPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Icon(Icons.star, color: AppColors.star, size: 32,),
+                      child: Icon(
+                        Icons.star,
+                        color: AppColors.star,
+                        size: 32,
+                      ),
                     ),
                   ),
                   InkWell(
-                    onTap: () { },
+                    onTap: () {
+                      _sendFavorite(id);
+                    },
                     child: Container(
                       width: 64,
                       height: 64,
@@ -209,7 +314,11 @@ class UserInfoPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Icon(Icons.favorite, color: AppColors.favorite, size: 32,),
+                      child: Icon(
+                        Icons.favorite,
+                        color: AppColors.favorite,
+                        size: 32,
+                      ),
                     ),
                   ),
                 ],
@@ -220,7 +329,11 @@ class UserInfoPage extends StatelessWidget {
       ),
     );
   }
-   Widget _chip({required Color background, required Color color, required String title}) {
+
+  Widget _chip(
+      {required Color background,
+      required Color color,
+      required String title}) {
     return Chip(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       label: Text(title, style: TextStyle(color: color)),
