@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chats_app/screens/login_screen.dart';
 import 'package:flutter_chats_app/screens/personal_data_screen.dart';
-import 'package:flutter_chats_app/services/AccountService.dart';
+import 'package:flutter_chats_app/services/EditMemberService.dart';
 import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'package:flutter_chats_app/widgets/round_gradient_button.dart';
 import 'package:flutter_chats_app/widgets/setting_row.dart';
 import 'package:flutter_chats_app/widgets/title_subtitle_cell.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -15,7 +15,46 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  final Accountservice _accountservice = Accountservice();
+  String _accountId = "";
+  String _fullname = "Loading...";
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccountId();
+  }
+
+  Future<void> _loadAccountId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+     if (userId != null) {
+      setState(() {
+        _accountId = userId;
+      });
+      _fetchMemberData();
+     }
+  }
+
+  Future<void> _fetchMemberData() async {
+    try {
+      final service = EditMemberService();
+      final member = await service.getMemberByAccountId(_accountId);
+      if (member != null) {
+        setState(() {
+          _fullname = member.fullname ?? 'No name';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching member data: $e');
+      setState(() {
+        _fullname = 'Error loading name';
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -29,35 +68,61 @@ class _UserProfileState extends State<UserProfile> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30),
-                  child: Image.asset(
-                    "assets/images/Smith.jpg",
+                  child: Image.network(
+                    "",
                     width: 50,
                     height: 50,
                     fit: BoxFit.cover,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child; // Ảnh đã tải xong
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    (loadingProgress.expectedTotalBytes ?? 1)
+                                : null,
+                          ),
+                        );
+                      }
+                    },
+                    errorBuilder: (BuildContext context, Object error,
+                        StackTrace? stackTrace) {
+                      return Center(
+                        child: Icon(Icons.account_circle,
+                            size: 50, color: Colors.grey),
+                      ); // Placeholder nếu ảnh không tải được
+                    },
                   ),
                 ),
                 const SizedBox(width: 15),
-                const Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Dear programmer",
-                      style: TextStyle(
-                        color: AppColors.blackColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _isLoading
+                          ? CircularProgressIndicator() 
+                          : Text(
+                              "Dear $_fullname",
+                              style: TextStyle(
+                                color: AppColors.blackColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "YouTuber",
+                        style: TextStyle(
+                          color: AppColors.grayColor,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "YouTuber",
-                      style: TextStyle(
-                        color: AppColors.grayColor,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                )),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   width: 70,
                   height: 40,
@@ -82,10 +147,12 @@ class _UserProfileState extends State<UserProfile> {
                       height: 50,
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const PersonalDataScreen(),
-                            ));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PersonalDataScreen(accountId: _accountId),
+                          ),
+                        );
                       },
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -147,7 +214,15 @@ class _UserProfileState extends State<UserProfile> {
                   SettingRow(
                     icon: "assets/icons/p_personal.png",
                     title: "Personal Data",
-                    onPressed: () {},
+                    onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PersonalDataScreen(accountId: _accountId),
+                          ),
+                        );
+                      },
                   ),
                 ],
               ),
@@ -196,16 +271,7 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
             const SizedBox(height: 30),
-            RoundGradientButton(
-                title: "Log Out",
-                onPressed: () {
-                  _accountservice.logOut();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ));
-                }),
+            RoundGradientButton(title: "Log Out", onPressed: () {}),
           ],
         ),
       ),

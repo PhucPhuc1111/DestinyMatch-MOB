@@ -1,4 +1,3 @@
-
 import 'package:flutter_chats_app/models/Account.dart';
 import 'package:flutter_chats_app/models/Hobby.dart';
 import 'package:flutter_chats_app/models/Major.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_chats_app/models/MemberPackage.dart';
 import 'package:flutter_chats_app/models/Message.dart';
 import 'package:flutter_chats_app/models/University.dart';
 import 'package:flutter_chats_app/models/Picture.dart';
-
 class Member {
   final String id;
   final String? fullname;
@@ -20,14 +18,14 @@ class Member {
   final String accountId;
   final String universityId;
   final String majorId;
-  final Account account;
-  final Major major;
+  final Account? account;
+  final Major? major;
   final List<Matching> matchingFirstMembers;
   final List<Matching> matchingSecondMembers;
   final List<MemberPackage> memberPackages;
   final List<Message> messages;
   final List<Picture> pictures;
-  final University university;
+  final University? university;
   final List<Hobby> hobbies;
 
   Member({
@@ -42,45 +40,51 @@ class Member {
     required this.accountId,
     required this.universityId,
     required this.majorId,
-    required this.account,
-    required this.major,
-    required this.matchingFirstMembers,
-    required this.matchingSecondMembers,
-    required this.memberPackages,
-    required this.messages,
-    required this.pictures,
-    required this.university,
-    required this.hobbies,
+    this.account,
+    this.major,
+    this.matchingFirstMembers = const [],
+    this.matchingSecondMembers = const [],
+    this.memberPackages = const [],
+    this.messages = const [],
+    this.pictures = const [],
+    this.university,
+    this.hobbies = const [],
   });
 
   factory Member.fromJson(Map<String, dynamic> json) {
     return Member(
-      id: json['id'],
+      id: json['id'] ?? '',
       fullname: json['fullname'],
       introduce: json['introduce'],
-      dob: json['dob'] != null ? DateTime.parse(json['dob']) : null,
+      dob: json['dob'] != null ? DateTime.tryParse(json['dob']) : null,
       gender: json['gender'],
       address: json['address'],
       surplus: json['surplus'],
       status: json['status'],
-      accountId: json['accountId'],
-      universityId: json['universityId'],
-      majorId: json['majorId'],
-      account: Account.fromJson(json['account']),
-      major: Major.fromJson(json['major']),
-      matchingFirstMembers: (json['matchingFirstMembers'] as List)
-          .map((i) => Matching.fromJson(i))
+      accountId: json['account-id'] ?? '',
+      universityId: json['university-id'] ?? '',
+      majorId: json['major-id'] ?? '',
+      account: json['account'] != null ? Account.fromJson(json['account'] as Map<String, dynamic>) : null,
+      major: json['major'] != null ? Major.fromJson(json['major'] as Map<String, dynamic>) : null,
+      matchingFirstMembers: (json['matching-first-members'] as List<dynamic>? ?? [])
+          .map((item) => Matching.fromJson(item as Map<String, dynamic>))
           .toList(),
-      matchingSecondMembers: (json['matchingSecondMembers'] as List)
-          .map((i) => Matching.fromJson(i))
+      matchingSecondMembers: (json['matching-second-members'] as List<dynamic>? ?? [])
+          .map((item) => Matching.fromJson(item as Map<String, dynamic>))
           .toList(),
-      memberPackages: (json['memberPackages'] as List)
-          .map((i) => MemberPackage.fromJson(i))
+      memberPackages: (json['member-packages'] as List<dynamic>? ?? [])
+          .map((item) => MemberPackage.fromJson(item as Map<String, dynamic>))
           .toList(),
-      messages: (json['messages'] as List).map((i) => Message.fromJson(i)).toList(),
-      pictures: (json['pictures'] as List).map((i) => Picture.fromJson(i)).toList(),
-      university: University.fromJson(json['university']),
-      hobbies: (json['hobbies'] as List).map((i) => Hobby.fromJson(i)).toList(),
+      messages: (json['messages'] as List<dynamic>? ?? [])
+          .map((item) => Message.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      pictures: (json['pictures'] as List<dynamic>? ?? [])
+          .map((item) => Picture.fromJson(item as Map<String, dynamic>))
+          .toList(),
+      university: json['university'] != null ? University.fromJson(json['university'] as Map<String, dynamic>) : null,
+      hobbies: (json['hobbies'] as List<dynamic>? ?? [])
+          .map((item) => Hobby.fromJson(item as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -94,17 +98,17 @@ class Member {
       'address': address,
       'surplus': surplus,
       'status': status,
-      'accountId': accountId,
-      'universityId': universityId,
-      'majorId': majorId,
-      'account': account.toJson(),
-      'major': major.toJson(),
-      'matchingFirstMembers': matchingFirstMembers.map((e) => e.toJson()).toList(),
-      'matchingSecondMembers': matchingSecondMembers.map((e) => e.toJson()).toList(),
-      'memberPackages': memberPackages.map((e) => e.toJson()).toList(),
+      'account-id': accountId,
+      'university-id': universityId,
+      'major-id': majorId,
+      'account': account?.toJson(),
+      'major': major?.toJson(),
+      'matching-first-members': matchingFirstMembers.map((e) => e.toJson()).toList(),
+      'matching-second-members': matchingSecondMembers.map((e) => e.toJson()).toList(),
+      'member-packages': memberPackages.map((e) => e.toJson()).toList(),
       'messages': messages.map((e) => e.toJson()).toList(),
       'pictures': pictures.map((e) => e.toJson()).toList(),
-      'university': university.toJson(),
+      'university': university?.toJson(),
       'hobbies': hobbies.map((e) => e.toJson()).toList(),
     };
   }
