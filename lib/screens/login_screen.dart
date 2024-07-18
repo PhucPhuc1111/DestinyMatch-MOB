@@ -45,6 +45,8 @@ Future<void> Login(BuildContext context, String email, String password) async {
     print("Login failed");
   }
 }
+
+
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
@@ -159,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // );
                       },
                       child: const Text(
-                        "Forgot your password?",
+                        "Quên mật khẩu?",
                         style: TextStyle(
                           color: AppColors.secondaryColor1,
                           fontSize: 14,
@@ -170,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: media.width * 0.1),
                   RoundGradientButton(
-                      title: "Login",
+                      title: "Đăng nhập",
                       onPressed: () {
                         Login(context, _emailController.text,
                             _passController.text);
@@ -192,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const Text(
-                        "   Or   ",
+                        "   Hoặc   ",
                         style: TextStyle(
                           color: AppColors.grayColor,
                           fontSize: 14,
@@ -254,6 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                   SizedBox(height: media.width * 0.08),
+
                   TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -271,17 +274,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.w400,
                           ),
                           children: [
-                            TextSpan(text: "Don't hace an account?    "),
+                            TextSpan(text: "Chưa có tài khoản?    "),
                             TextSpan(
-                                text: "Register",
+                                text: "Đăng ký ngay",
                                 style: TextStyle(
                                   color: AppColors.secondaryColor1,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
-                                )),
+                                )
+                            ),
                           ],
                         ),
-                      )),
+                      )
+                  ),
+
                 ],
               ),
             ),
