@@ -9,6 +9,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 class Accountservice {
   //final String apiLink = "http://10.0.2.2:5107/api";
   //final String apiLink = "http://localhost:5107/api";
+  //final String apiLink = "https://destinymatch.serveo.net/api";
   final String apiLink = "https://destiny-match.azurewebsites.net/api";
 
   final storage = const FlutterSecureStorage();
@@ -53,6 +54,30 @@ class Accountservice {
       return true;
     } else {
       print({"error": "Login failed"});
+      return false;
+    }
+  }
+
+  Future<bool> register(String email, String password, bool receiveEmail) async {
+    final url = Uri.parse("$apiLink/accounts/register");
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "email": email,
+        "password": password,
+        "receivenotifiemail": receiveEmail,
+      }),
+    );
+    print("response:");print(response);
+    print("response body:");print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print({"error": "Register failed"});
       return false;
     }
   }

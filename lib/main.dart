@@ -5,6 +5,7 @@ import 'package:flutter_chats_app/screens/home_screen.dart';
 import 'package:flutter_chats_app/screens/start_screen.dart';
 import 'package:flutter_chats_app/services/AccountService.dart';
 import 'package:flutter_chats_app/services/FirebaseApi.dart';
+import 'package:flutter_chats_app/utils/app_colors.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -26,9 +27,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         
-        title: 'Chat',
+        title: 'Destiny Match',
         theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
+          scaffoldBackgroundColor: hexToColor('#ffe2f0'),
         ),
         home: FutureBuilder<bool>(
             future: _accountservice.checkAccountLogin(),

@@ -14,7 +14,7 @@ class RoundGradientButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: AppColors.primaryG,
+            colors: AppColors.customMain,
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
