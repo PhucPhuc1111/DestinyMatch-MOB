@@ -19,7 +19,7 @@ class RoundTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightgrayColor,
+        color: AppColors.whiteColor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(

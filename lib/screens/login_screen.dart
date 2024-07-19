@@ -101,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: media.width * 0.1),
                   RoundTextField(
+                    
                     textEditingController: _emailController,
                     hintText: "email",
                     icon: "assets/icons/message_icon.png",
@@ -111,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                       return null;
                     },
+                    
                   ),
                   SizedBox(height: media.width * 0.05),
                   RoundTextField(
