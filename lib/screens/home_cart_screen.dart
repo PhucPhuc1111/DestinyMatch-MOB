@@ -17,6 +17,8 @@ class _HomeCartState extends State<HomeCartScreen> {
   List<ProfileCard> profile = [];
   final TextEditingController minAgeController = TextEditingController();
   final TextEditingController maxAgeController = TextEditingController();
+  final AppinioSwiperController swiperController = AppinioSwiperController();
+  int currentIndex = 0; // Track the current card index
 
   Future<void> _fetchMembers({int minAge = 0, int maxAge = 100}) async {
     try {
@@ -234,9 +236,20 @@ class _HomeCartState extends State<HomeCartScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 130, top: 16),
             child: AppinioSwiper(
+              controller: swiperController, // Add the controller here
               cardCount: profile.length,
               cardBuilder: (BuildContext context, int index) {
                 return profile[index];
+              },
+              onSwipeEnd: (int index, int direction, SwiperActivity activity) {
+                setState(() {
+                  currentIndex = index + 1;
+                });
+              },
+              onEnd: () {
+                setState(() {
+                  currentIndex = 0;
+                });
               },
             ),
           ),
@@ -295,8 +308,8 @@ class _HomeCartState extends State<HomeCartScreen> {
                 ),
                 InkWell(
                   onTap: () {
-                    if (profile.isNotEmpty) {
-                      _sendFavorite(profile[0].id);
+                    if (profile.isNotEmpty && currentIndex < profile.length) {
+                      _sendFavorite(profile[currentIndex].id);
                     }
                   },
                   child: Container(
